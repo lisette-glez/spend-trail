@@ -1,0 +1,53 @@
+body {
+    font-family: sans-serif;  
+    background-color: #edf3ff;
+}
+
+/* upload component */
+.upload-card {
+    border: 0 !important;
+    box-shadow: 0 5px 75px rgb(0 78 149/9%);
+}
+
+ .uploader {
+     padding: 80px 0;
+     text-align: center;
+     border: 2.5px dashed #80808038;
+     position: relative;
+     border-radius: 15px;
+     background-color: #edf3ff40;
+     margin: 2rem;
+ }
+
+ .upload-image {
+     margin-top: -60px;
+     width: 50%;
+ }
+
+ .upload-btn {
+    background: linear-gradient(.31deg, #3cac8a .7%, #5cceac 99.3%);
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+ }
+
+ .file-input {
+     width: 150px;
+     margin: auto;
+     height: 68px;
+     position: relative;
+ }
+
+ .file-input input {
+     background: #fff;
+     position: absolute;
+     left: 0;
+     padding: 10px;
+     cursor: pointer;
+     opacity: 0;
+     z-index: -2;
+ }
+
+.btn-icon {
+    font-size: 14px;
+}
+
