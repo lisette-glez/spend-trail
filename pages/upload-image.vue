@@ -1,11 +1,12 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const isUpload = ref(false);
+const isLoading = ref(false);
 const imgFile = ref(null);
 const imgPreview = ref(null);
-const isLoading = ref(false);
 const allowedTypes = ref(["image/jpeg", "image/png"]);
 const errorType = ref(false);
+const text = ref(null);
 
 function onChange(e) {
   imgFile.value = e.files[0];
@@ -26,14 +27,21 @@ function onChange(e) {
 async function uploadImage() {
   isLoading.value = true;
   const formData = new FormData();
-  formData.append("image", imgFile.value);
-  const response = await useFetch(runtimeConfig.public.apiBase, {
+  formData.append("file", imgFile.value);
+  formData.append("language", "eng");
+  formData.append("apikey", runtimeConfig.public.apiKey);
+  formData.append("OCREngine", 3);
+
+  const { data } = await useFetch(runtimeConfig.public.apiBase, {
     method: "post",
     headers: { "X-Api-Key": runtimeConfig.public.apiKey },
     body: formData,
   });
-  isLoading.value = false;
-  console.log(response);
+
+  if (data.value.OCRExitCode == 1) {
+    text.value = data.value.ParsedResults[0].ParsedText;
+    isLoading.value = false;
+  }
 }
 </script>
 
@@ -110,6 +118,9 @@ async function uploadImage() {
                       v-if="isLoading"
                     ></span>
                   </button>
+                  <div class="form-floating mt-5 px-5">
+                    <textarea class="form-control" v-model="text"></textarea>
+                  </div>
                 </div>
               </div>
             </div>
