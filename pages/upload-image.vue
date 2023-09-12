@@ -4,17 +4,23 @@ const isUpload = ref(false);
 const imgFile = ref(null);
 const imgPreview = ref(null);
 const isLoading = ref(false);
+const allowedTypes = ref(["image/jpeg", "image/png"]);
+const errorType = ref(false);
 
 function onChange(e) {
   imgFile.value = e.files[0];
-  isUpload.value = true;
-
-  //image preview
-  let reader = new FileReader();
-  reader.readAsDataURL(imgFile.value);
-  reader.onload = (e) => {
-    imgPreview.value = e.target.result;
-  };
+  if (allowedTypes.value.includes(imgFile.value.type)) {
+    isUpload.value = true;
+    //image preview
+    let reader = new FileReader();
+    reader.readAsDataURL(imgFile.value);
+    reader.onload = (e) => {
+      imgPreview.value = e.target.result;
+    };
+  } else {
+    imgFile.value = null;
+    errorType.value = true;
+  }
 }
 
 async function uploadImage() {
@@ -36,6 +42,22 @@ async function uploadImage() {
     <div class="container">
       <div class="row my-5 justify-content-center">
         <div class="col-md-8">
+          <div
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+            v-if="errorType"
+          >
+            File type not allow
+            <i class="bi-exclamation-triangle"></i>
+            You can upload only JPEG and PNG images.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+              @click="errorType = !errorType"
+            ></button>
+          </div>
           <div class="card upload-card mt-4">
             <div class="card-body">
               <div class="text-center mt-3">
