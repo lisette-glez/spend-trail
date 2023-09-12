@@ -3,6 +3,7 @@ const runtimeConfig = useRuntimeConfig();
 const isUpload = ref(false);
 const imgFile = ref(null);
 const imgPreview = ref(null);
+const isLoading = ref(false);
 
 function onChange(e) {
   imgFile.value = e.files[0];
@@ -17,6 +18,7 @@ function onChange(e) {
 }
 
 async function uploadImage() {
+  isLoading.value = true;
   const formData = new FormData();
   formData.append("image", imgFile.value);
   const response = await useFetch(runtimeConfig.public.apiBase, {
@@ -24,6 +26,7 @@ async function uploadImage() {
     headers: { "X-Api-Key": runtimeConfig.public.apiKey },
     body: formData,
   });
+  isLoading.value = false;
   console.log(response);
 }
 </script>
@@ -78,6 +81,12 @@ async function uploadImage() {
                     @click="uploadImage"
                   >
                     <i class="bi-upload btn-icon"></i> Upload image
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                      v-if="isLoading"
+                    ></span>
                   </button>
                 </div>
               </div>
