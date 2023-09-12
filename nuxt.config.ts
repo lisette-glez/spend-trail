@@ -5,4 +5,10 @@ export default defineNuxtConfig({
     "bootstrap-icons/font/bootstrap-icons.css",
   ],
   plugins: [{ src: "~/plugins/bootstrap.js", mode: "client" }],
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_NINJA_URL,
+      apiKey: process.env.API_NINJA_KEY,
+    },
+  },
 });

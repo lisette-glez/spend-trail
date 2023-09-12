@@ -24,13 +24,13 @@ body {
      width: 50%;
  }
 
- .upload-btn {
+ .browse-btn {
     background: linear-gradient(.31deg, #3cac8a .7%, #5cceac 99.3%);
     color: #fff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+  
  }
 
- .file-input {
+.file-input {
      width: 150px;
      margin: auto;
      height: 68px;
