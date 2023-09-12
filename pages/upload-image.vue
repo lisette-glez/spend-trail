@@ -2,10 +2,18 @@
 const runtimeConfig = useRuntimeConfig();
 const isUpload = ref(false);
 const imgFile = ref(null);
+const imgPreview = ref(null);
 
 function onChange(e) {
   imgFile.value = e.target.files[0];
   isUpload.value = true;
+
+  let reader = new FileReader();
+  reader.readAsDataURL(imgFile.value);
+
+  reader.onload = (e) => {
+    imgPreview.value = e.target.result;
+  };
 }
 
 async function uploadImage() {
@@ -34,8 +42,8 @@ async function uploadImage() {
               </div>
               <form method="post" @submit.prevent="onSubmit">
                 <div class="uploader">
-                  <div class="file-input">
-                    <div for="file" v-if="!isUpload">
+                  <div class="file-input" v-if="!isUpload">
+                    <div for="file">
                       <img
                         src="~/assets/img/upload-img.png"
                         class="img-fluid upload-image"
@@ -43,7 +51,7 @@ async function uploadImage() {
                       <p class="custom-subtitle mt-4">
                         <button
                           size="sm"
-                          class="btn btn-info browse-btn"
+                          class="btn btn-info browse-btn mt-2"
                           @click="$refs.file.click()"
                         >
                           <i class="bi-plus-circle-dotted btn-icon"></i> Browse
@@ -52,10 +60,12 @@ async function uploadImage() {
                       </p>
                       <input type="file" ref="file" @change="onChange" />
                     </div>
+                  </div>
+                  <div v-if="isUpload">
+                    <img :src="imgPreview" class="img-fluid px-5" />
                     <button
                       size="sm"
-                      class="btn btn-info text-light"
-                      v-if="isUpload"
+                      class="btn btn-info text-light mt-5"
                       @click="uploadImage"
                     >
                       <i class="bi-upload btn-icon"></i> Upload image
