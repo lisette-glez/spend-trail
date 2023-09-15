@@ -7,8 +7,8 @@ export default defineNuxtConfig({
   plugins: [{ src: "~/plugins/bootstrap.js", mode: "client" }],
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_OCR_URL,
-      apiKey: process.env.API_OCR_KEY,
+      apiBase: process.env.API_MINDEE_URL,
+      apiKey: process.env.API_MINDEE_KEY,
     },
   },
 });

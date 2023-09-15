@@ -27,19 +27,16 @@ function onChange(e) {
 async function uploadImage() {
   isLoading.value = true;
   const formData = new FormData();
-  formData.append("file", imgFile.value);
-  formData.append("language", "eng");
-  formData.append("apikey", runtimeConfig.public.apiKey);
-  formData.append("OCREngine", 3);
+  formData.append("document", imgFile.value);
 
   const { data } = await useFetch(runtimeConfig.public.apiBase, {
     method: "post",
-    headers: { "X-Api-Key": runtimeConfig.public.apiKey },
+    headers: { Authorization: "Token " + runtimeConfig.public.apiKey },
     body: formData,
   });
 
-  if (data.value.OCRExitCode == 1) {
-    text.value = data.value.ParsedResults[0].ParsedText;
+  if (data.value.api_request.status_code == 201) {
+    text.value = data.value.document.inference.prediction;
     isLoading.value = false;
   }
 }
@@ -119,7 +116,7 @@ async function uploadImage() {
                     ></span>
                   </button>
                   <div class="form-floating mt-5 px-5">
-                    <textarea class="form-control" v-model="text"></textarea>
+                    <textarea class="form-control">{{ text }}</textarea>
                   </div>
                 </div>
               </div>
