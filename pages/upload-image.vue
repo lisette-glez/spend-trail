@@ -46,7 +46,7 @@ async function uploadImage() {
   <section>
     <div class="container">
       <div class="row my-5 justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-6">
           <div
             class="alert alert-danger alert-dismissible fade show"
             role="alert"
@@ -64,13 +64,19 @@ async function uploadImage() {
             ></button>
           </div>
           <div class="card upload-card mt-4">
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#"
+                  >My device</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link (URL)</a>
+              </li>
+            </ul>
             <div class="card-body">
-              <div class="text-center mt-3">
-                <h5 class="fw-bolder">
-                  Select image to Upload or Drag and Drop
-                </h5>
-              </div>
               <div
+                @click="$refs.file.click()"
                 class="uploader"
                 @dragover.prevent
                 @dragenter.prevent
@@ -83,16 +89,6 @@ async function uploadImage() {
                       src="~/assets/img/upload-img.png"
                       class="img-fluid upload-image"
                     />
-                    <p class="custom-subtitle mt-4">
-                      <button
-                        size="sm"
-                        class="btn btn-info browse-btn mt-2"
-                        @click="$refs.file.click()"
-                      >
-                        <i class="bi-plus-circle-dotted btn-icon"></i> Browse
-                        image
-                      </button>
-                    </p>
                     <input
                       type="file"
                       ref="file"
@@ -100,6 +96,7 @@ async function uploadImage() {
                     />
                   </div>
                 </div>
+                <p class="h6">Drag image here or click to browse</p>
                 <div v-if="isUpload">
                   <img :src="imgPreview" class="img-fluid px-5" />
                   <button
