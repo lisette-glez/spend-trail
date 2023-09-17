@@ -63,7 +63,25 @@ async function uploadImage() {
               @click="errorType = !errorType"
             ></button>
           </div>
-          <div class="card upload-card mt-4">
+          <div class="card upload-card mt-4 p-4">
+            <div class="row mt-2 mb-5 text-center">
+              <h5 class="mb-4">Select document type you want process</h5>
+              <div class="col">
+                <div class="card doc-type-card type-active">
+                  <span><i class="bi-file-earmark-text pe-1"></i> Invoice</span>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card doc-type-card">
+                  <span><i class="bi-receipt pe-1"></i> Receipt</span>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card doc-type-card">
+                  <span><i class="bi-bank pe-1"></i> Bank Statement</span>
+                </div>
+              </div>
+            </div>
             <ul class="nav nav-tabs">
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#"

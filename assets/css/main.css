@@ -67,3 +67,29 @@ textarea {
 .upload-card .card-body {
     padding: unset !important;
 }
+
+.upload-card h5 {
+    color: #000;
+    opacity: .7;    
+}
+
+.doc-type-card {
+    border-color: #578fff;
+    cursor: pointer;
+}
+
+.doc-type-card i {
+    color: #578fff;
+}
+
+.doc-type-card span{
+    font-size: 16px;
+    font-weight: 600;
+    color: #919dba;
+}
+
+.doc-type-card:hover, .type-active{
+    background-color: #edf3ff;
+}
+
+      
