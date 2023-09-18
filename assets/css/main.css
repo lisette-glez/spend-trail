@@ -78,7 +78,7 @@ textarea {
     cursor: pointer;
 }
 
-.doc-type-card i {
+.doc-type-card i, .bi-upload {
     color: #578fff;
 }
 
@@ -90,6 +90,24 @@ textarea {
 
 .doc-type-card:hover, .type-active{
     background-color: #edf3ff;
+}
+
+.custom-btn, .custom-btn:hover {
+    background-color: #578fff;
+}
+
+.noPaddingTop {
+    padding-top: 0 !important;
+}
+
+.cs-pointer {
+    cursor: pointer;
+}
+
+.close-icon {
+    font-size: 25px;
+    padding-right: 0.3rem !important;
+    color: #99A3BA;
 }
 
       

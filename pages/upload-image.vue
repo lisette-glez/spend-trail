@@ -40,6 +40,12 @@ async function uploadImage() {
     isLoading.value = false;
   }
 }
+
+function cancelUpload() {
+  imgFile.value = null;
+  imgPreview.value = null;
+  isUpload.value = false;
+}
 </script>
 
 <template>
@@ -64,7 +70,7 @@ async function uploadImage() {
             ></button>
           </div>
           <div class="card upload-card mt-4 p-4">
-            <div class="row mt-2 mb-5 text-center">
+            <div class="row mt-2 mb-5 text-center" v-if="!isUpload">
               <h5 class="mb-4">Select document type you want process</h5>
               <div class="col">
                 <div class="card doc-type-card type-active">
@@ -82,26 +88,48 @@ async function uploadImage() {
                 </div>
               </div>
             </div>
-            <ul class="nav nav-tabs">
-              <li class="nav-item">
+            <ul class="nav nav-tabs justify-content-end">
+              <li class="nav-item" v-if="!isUpload">
                 <a class="nav-link active" aria-current="page" href="#"
                   >My device</a
                 >
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="!isUpload">
                 <a class="nav-link" href="#">Link (URL)</a>
+              </li>
+              <li
+                class="nav-item cs-pointer"
+                v-if="isUpload"
+                @click="uploadImage"
+              >
+                <div class="nav-link">
+                  <i class="bi-upload pe-1"></i> Upload
+                  <span
+                    class="spinner-border text-primary spinner-border-sm ms-1"
+                    role="status"
+                    aria-hidden="true"
+                    v-if="isLoading"
+                  ></span>
+                </div>
               </li>
             </ul>
             <div class="card-body">
               <div
-                @click="$refs.file.click()"
                 class="uploader"
                 @dragover.prevent
                 @dragenter.prevent
                 @dragstart.prevent
                 @drop.prevent="onChange($event.dataTransfer)"
+                :class="{ noPaddingTop: isUpload }"
               >
-                <div class="file-input" v-if="!isUpload">
+                <div class="text-end" v-if="isUpload">
+                  <i class="bi-x close-icon" @click="cancelUpload"></i>
+                </div>
+                <div
+                  class="file-input"
+                  v-if="!isUpload"
+                  @click="$refs.file.click()"
+                >
                   <div for="file">
                     <img
                       src="~/assets/img/upload-img.png"
@@ -114,25 +142,11 @@ async function uploadImage() {
                     />
                   </div>
                 </div>
-                <p class="h6">Drag image here or click to browse</p>
+                <p class="h6" v-if="!isUpload">
+                  Drag image here or click to browse
+                </p>
                 <div v-if="isUpload">
                   <img :src="imgPreview" class="img-fluid px-5" />
-                  <button
-                    size="sm"
-                    class="btn btn-info text-light mt-5"
-                    @click="uploadImage"
-                  >
-                    <i class="bi-upload btn-icon"></i> Upload image
-                    <span
-                      class="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                      v-if="isLoading"
-                    ></span>
-                  </button>
-                  <div class="form-floating mt-5 px-5">
-                    <textarea class="form-control">{{ text }}</textarea>
-                  </div>
                 </div>
               </div>
             </div>
