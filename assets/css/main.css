@@ -92,7 +92,7 @@ textarea {
     background-color: #edf3ff;
 }
 
-.custom-btn, .custom-btn:hover {
+.custom-btn, .custom-btn:hover, .url-btn {
     background-color: #578fff;
 }
 
@@ -110,4 +110,13 @@ textarea {
     color: #99A3BA;
 }
 
+.link-input .input-group-text {
+    background-color: #edf3ff40;
+    font-size: 20px;
+    color: #578fff;
+}
+
+.link-input input::placeholder {
+    color: #99A3BA;
+}
       

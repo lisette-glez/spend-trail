@@ -7,6 +7,7 @@ const imgPreview = ref(null);
 const allowedTypes = ref(["image/jpeg", "image/png"]);
 const errorType = ref(false);
 const text = ref(null);
+const activeTab = ref("device");
 
 function onChange(e) {
   imgFile.value = e.files[0];
@@ -45,6 +46,14 @@ function cancelUpload() {
   imgFile.value = null;
   imgPreview.value = null;
   isUpload.value = false;
+}
+
+function getUrl(url) {
+  console.log(url);
+}
+
+function changeTab(tabName) {
+  activeTab.value = tabName;
 }
 </script>
 
@@ -89,13 +98,23 @@ function cancelUpload() {
               </div>
             </div>
             <ul class="nav nav-tabs justify-content-end">
-              <li class="nav-item" v-if="!isUpload">
-                <a class="nav-link active" aria-current="page" href="#"
+              <li
+                class="nav-item cs-pointer"
+                v-if="!isUpload"
+                @click="changeTab('device')"
+              >
+                <a class="nav-link" :class="{ active: activeTab == 'device' }"
                   >My device</a
                 >
               </li>
-              <li class="nav-item" v-if="!isUpload">
-                <a class="nav-link" href="#">Link (URL)</a>
+              <li
+                class="nav-item cs-pointer"
+                v-if="!isUpload"
+                @click="changeTab('link')"
+              >
+                <a class="nav-link" :class="{ active: activeTab == 'link' }"
+                  >Link (URL)</a
+                >
               </li>
               <li
                 class="nav-item cs-pointer"
@@ -115,6 +134,7 @@ function cancelUpload() {
             </ul>
             <div class="card-body">
               <div
+                v-if="activeTab == 'device'"
                 class="uploader"
                 @dragover.prevent
                 @dragenter.prevent
@@ -149,6 +169,7 @@ function cancelUpload() {
                   <img :src="imgPreview" class="img-fluid px-5" />
                 </div>
               </div>
+              <UploadByLink @typedUrl="getUrl" v-if="activeTab == 'link'" />
             </div>
           </div>
         </div>
