@@ -60,8 +60,9 @@ textarea {
 }
 
 .upload-card .nav-tabs .nav-link.active {
-    border-bottom: 1.5px solid #578fff !important;
+    border-bottom: 2px solid #578fff !important;
     color: #578fff;
+    font-weight: 600;
 }
 
 .upload-card .card-body {
@@ -69,8 +70,9 @@ textarea {
 }
 
 .upload-card h5 {
-    color: #000;
-    opacity: .7;    
+    color: #919dba;
+    font-weight: 600;
+    font-size: 17px;
 }
 
 .doc-type-card {
@@ -83,8 +85,7 @@ textarea {
 }
 
 .doc-type-card span{
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 16px;  
     color: #919dba;
 }
 
@@ -116,7 +117,8 @@ textarea {
     color: #578fff;
 }
 
-.link-input input::placeholder {
+.link-input input::placeholder, .upload-title {
     color: #99A3BA;
+    opacity: .7;
 }
       

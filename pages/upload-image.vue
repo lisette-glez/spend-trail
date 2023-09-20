@@ -104,7 +104,7 @@ function changeTab(tabName) {
                 @click="changeTab('device')"
               >
                 <a class="nav-link" :class="{ active: activeTab == 'device' }"
-                  >My device</a
+                  >Upload</a
                 >
               </li>
               <li
@@ -113,7 +113,7 @@ function changeTab(tabName) {
                 @click="changeTab('link')"
               >
                 <a class="nav-link" :class="{ active: activeTab == 'link' }"
-                  >Link (URL)</a
+                  >From URL</a
                 >
               </li>
               <li
@@ -162,9 +162,17 @@ function changeTab(tabName) {
                     />
                   </div>
                 </div>
-                <p class="h6" v-if="!isUpload">
-                  Drag image here or click to browse
-                </p>
+                <div class="row justify-content-center">
+                  <div class="col-md-5">
+                    <p
+                      class="h6 upload-title"
+                      v-if="!isUpload"
+                      @click="$refs.file.click()"
+                    >
+                      Click to browse, or drag and drop an image here
+                    </p>
+                  </div>
+                </div>
                 <div v-if="isUpload">
                   <img :src="imgPreview" class="img-fluid px-5" />
                 </div>
