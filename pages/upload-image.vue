@@ -4,10 +4,17 @@ const isUpload = ref(false);
 const isLoading = ref(false);
 const imgFile = ref(null);
 const imgPreview = ref(null);
-const allowedTypes = ref(["image/jpeg", "image/png"]);
-const errorType = ref(false);
 const text = ref(null);
 const activeTab = ref("device");
+const errorAlert = ref(false);
+const errorMessage = ref(null);
+const allowedTypes = ref([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/tiff",
+]);
 
 function onChange(e) {
   imgFile.value = e.files[0];
@@ -21,7 +28,9 @@ function onChange(e) {
     };
   } else {
     imgFile.value = null;
-    errorType.value = true;
+    errorMessage.value =
+      "File type not allowed. You can upload only jpg, png, webp, heic and tiff images.";
+    errorAlert.value = true;
   }
 }
 
@@ -63,22 +72,7 @@ function changeTab(tabName) {
     <div class="container">
       <div class="row my-5 justify-content-center">
         <div class="col-md-6">
-          <div
-            class="alert alert-danger alert-dismissible fade show"
-            role="alert"
-            v-if="errorType"
-          >
-            File type not allow
-            <i class="bi-exclamation-triangle"></i>
-            You can upload only JPEG and PNG images.
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-              @click="errorType = !errorType"
-            ></button>
-          </div>
+          <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
           <div class="card upload-card mt-4 p-4">
             <div class="row mt-2 mb-5 text-center" v-if="!isUpload">
               <h5 class="mb-4">Select document type you want process</h5>
