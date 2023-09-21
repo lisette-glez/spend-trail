@@ -49,7 +49,8 @@ function cancelUpload() {
 }
 
 function getUrl(url) {
-  console.log(url);
+  imgFile.value = imgPreview.value = url;
+  isUpload.value = true;
 }
 
 function changeTab(tabName) {
@@ -131,10 +132,25 @@ function changeTab(tabName) {
                   ></span>
                 </div>
               </li>
+              <li
+                class="nav-item cs-pointer"
+                v-if="isUpload"
+                @click="cancelUpload"
+              >
+                <div class="nav-link">
+                  <i class="bi-x-circle pe-1 text-danger"></i> Cancelar
+                  <span
+                    class="spinner-border text-primary spinner-border-sm ms-1"
+                    role="status"
+                    aria-hidden="true"
+                    v-if="isLoading"
+                  ></span>
+                </div>
+              </li>
             </ul>
             <div class="card-body">
               <div
-                v-if="activeTab == 'device'"
+                v-if="activeTab == 'device' && !isUpload"
                 class="uploader"
                 @dragover.prevent
                 @dragenter.prevent
@@ -142,9 +158,6 @@ function changeTab(tabName) {
                 @drop.prevent="onChange($event.dataTransfer)"
                 :class="{ noPaddingTop: isUpload }"
               >
-                <div class="text-end" v-if="isUpload">
-                  <i class="bi-x close-icon" @click="cancelUpload"></i>
-                </div>
                 <div
                   class="file-input"
                   v-if="!isUpload"
@@ -173,11 +186,14 @@ function changeTab(tabName) {
                     </p>
                   </div>
                 </div>
-                <div v-if="isUpload">
-                  <img :src="imgPreview" class="img-fluid px-5" />
-                </div>
               </div>
-              <UploadByLink @typedUrl="getUrl" v-if="activeTab == 'link'" />
+              <UploadByLink
+                @typedUrl="getUrl"
+                v-if="activeTab == 'link' && !isUpload"
+              />
+            </div>
+            <div v-if="isUpload">
+              <img :src="imgPreview" class="img-fluid px-5 py-3" />
             </div>
           </div>
         </div>

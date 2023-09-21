@@ -18,7 +18,7 @@ const emit = defineEmits(["typedUrl"]);
         />
         <span
           class="input-group-text cs-pointer"
-          @click="$emit('typedUrl', fileUrl)"
+          @click="emit('typedUrl', fileUrl)"
         >
           <i class="bi-send"></i
         ></span>
