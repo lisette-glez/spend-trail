@@ -121,4 +121,18 @@ textarea {
     color: #99A3BA;
     opacity: .7;
 }
+
+.extracted-data .list-group {
+    background-color: #f0f8ff7d;
+    padding: 1rem;
+}
+
+.extracted-data .list-group .key-name {
+    color: #919dba;
+}
+
+.extracted-data .list-group .list-group-item{
+    border-left: 3px solid #578fff;
+    padding: 5px 7px;
+}
       
