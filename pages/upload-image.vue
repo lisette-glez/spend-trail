@@ -53,10 +53,9 @@ async function uploadImage() {
       customer_address: "Customer address",
       customer_company_registrations: "Customer registration",
       customer_name: "Customer",
+      document_type: "Tipo de documento",
       date: "Date",
       due_date: "Due date",
-      document_type: "Tipo de documento",
-      locale: "Language",
       supplier_name: "Supplier",
       supplier_address: "Supplier address",
       supplier_company_registrations: "Supplier registration",
@@ -102,7 +101,10 @@ function changeTab(tabName) {
     <div class="container mt-5">
       <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
       <div class="card upload-card p-4">
-        <div class="row justify-content-center">
+        <h5 v-if="responseSuccess" class="mt-3 mb-0">
+          EXTRACTED DATA FROM YOUR {{ extractedData.document_type.value }}
+        </h5>
+        <div class="row my-4 justify-content-center">
           <div class="col-md-6" v-if="!isUpload">
             <div class="row mt-4 mb-5 text-center">
               <h5 class="mb-4">Select document type you want process</h5>
@@ -174,14 +176,14 @@ function changeTab(tabName) {
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-5" v-if="isUpload">
             <UploadByLink
               @typedUrl="getUrl"
               v-if="activeTab == 'link' && !isUpload"
             />
+          </div>
+          <div class="col-md-5" v-if="isUpload">
             <ul
-              class="nav nav-tabs justify-content-end"
+              class="nav nav-tabs justify-content-end mb-3"
               v-if="!responseSuccess"
             >
               <li class="nav-item cs-pointer" @click="uploadImage">
@@ -202,10 +204,10 @@ function changeTab(tabName) {
               </li>
             </ul>
             <div>
-              <img :src="imgPreview" class="img-fluid py-3" />
+              <img :src="imgPreview" class="img-fluid py-3 preview-img" />
             </div>
           </div>
-          <div class="col-md-3 my-4 extracted-data" v-if="responseSuccess">
+          <div class="col-md-3 extracted-data" v-if="responseSuccess">
             <ul class="list-group rounded-0">
               <div v-for="(text, key, index) in invoiceData" :key="index">
                 <div v-if="text.value != null">
@@ -217,28 +219,11 @@ function changeTab(tabName) {
               </div>
             </ul>
           </div>
-          <div class="col-md-4 mt-4 extracted-data" v-if="responseSuccess">
-            <ul class="list-group rounded-0">
-              <div class="fw-bold key-name">Taxes</div>
-              <li
-                class="list-group-item"
-                v-for="(tax, index) in invoiceData.taxes"
-                :key="index"
-              >
-                <div>{{ tax.rate }}% - {{ tax.value }}</div>
-              </li>
-            </ul>
-            <ul class="list-group rounded-0">
-              <div class="fw-bold key-name">PO #</div>
-              <li
-                class="list-group-item"
-                v-for="(reference, index) in invoiceData.reference_numbers"
-                :key="index"
-              >
-                <div>{{ reference.value }}</div>
-              </li>
-            </ul>
-            <ul class="list-group rounded-0">
+          <div class="col-md-4 extracted-data" v-if="responseSuccess">
+            <ul
+              class="list-group rounded-0"
+              v-if="invoiceData.line_items.length > 0"
+            >
               <div class="fw-bold key-name">Line Items</div>
               <li
                 class="list-group-item mb-3"
@@ -249,6 +234,44 @@ function changeTab(tabName) {
                   {{ item.quantity || 1 }}- {{ item.description }} x
                   {{ item.unit_price }}.00 - {{ item.total_amount }}.00
                 </div>
+              </li>
+            </ul>
+            <ul
+              class="list-group rounded-0"
+              v-if="invoiceData.reference_numbers.length > 0"
+            >
+              <div class="fw-bold key-name">PO #</div>
+              <li
+                class="list-group-item"
+                v-for="(reference, index) in invoiceData.reference_numbers"
+                :key="index"
+              >
+                <div>{{ reference.value }}</div>
+              </li>
+            </ul>
+            <ul
+              class="list-group rounded-0"
+              v-if="invoiceData.taxes.length > 0"
+            >
+              <div class="fw-bold key-name">Taxes</div>
+              <li
+                class="list-group-item"
+                v-for="(tax, index) in invoiceData.taxes"
+                :key="index"
+              >
+                <div>{{ tax.rate }}% - {{ tax.value }}</div>
+              </li>
+            </ul>
+            <ul class="list-group rounded-0">
+              <div class="fw-bold key-name">Language</div>
+              <li class="list-group-item">
+                <div>{{ invoiceData.locale.language }}</div>
+              </li>
+            </ul>
+            <ul class="list-group rounded-0">
+              <div class="fw-bold key-name">Currency</div>
+              <li class="list-group-item">
+                <div>{{ invoiceData.locale.currency }}</div>
               </li>
             </ul>
           </div>
