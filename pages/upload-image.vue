@@ -17,6 +17,8 @@ const allowedTypes = ref([
   "image/tiff",
 ]);
 const invoiceData = ref(null);
+const docType = ref("invoice");
+const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
 
 function onChange(e) {
   imgFile.value = e.files[0];
@@ -38,10 +40,11 @@ function onChange(e) {
 
 async function uploadImage() {
   isLoading.value = true;
+  const config = null;
   const formData = new FormData();
   formData.append("document", imgFile.value);
 
-  const { data } = await useFetch(runtimeConfig.public.apiBase, {
+  const { data } = await useFetch(docApiUrl, {
     method: "post",
     headers: { Authorization: "Token " + runtimeConfig.public.apiKey },
     body: formData,
@@ -94,6 +97,18 @@ function getUrl(url) {
 function changeTab(tabName) {
   activeTab.value = tabName;
 }
+
+function changeDocType(type) {
+  docType.value = type;
+
+  if (docType.value == "invoice") {
+    docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
+  } else if (docType.value == "receipt") {
+    docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
+  } else if (docType.value == "driver") {
+    docApiUrl.value = runtimeConfig.public.apiBaseDriver;
+  }
+}
 </script>
 
 <template>
@@ -106,21 +121,33 @@ function changeTab(tabName) {
         </h5>
         <div class="row my-4 justify-content-center">
           <div class="col-md-6" v-if="!isUpload">
-            <div class="row mt-4 mb-5 text-center">
+            <div class="row mb-5 text-center">
               <h5 class="mb-4">Select document type you want process</h5>
               <div class="col">
-                <div class="card doc-type-card type-active">
+                <div
+                  class="card doc-type-card p-2"
+                  :class="{ typeActive: docType == 'invoice' }"
+                  @click="changeDocType('invoice')"
+                >
                   <span><i class="bi-file-earmark-text pe-1"></i> Invoice</span>
                 </div>
               </div>
               <div class="col">
-                <div class="card doc-type-card">
+                <div
+                  class="card doc-type-card p-2"
+                  :class="{ typeActive: docType == 'receipt' }"
+                  @click="changeDocType('receipt')"
+                >
                   <span><i class="bi-receipt pe-1"></i> Receipt</span>
                 </div>
               </div>
               <div class="col">
-                <div class="card doc-type-card">
-                  <span><i class="bi-bank pe-1"></i> Bank Statement</span>
+                <div
+                  class="card doc-type-card p-2"
+                  :class="{ typeActive: docType == 'driver' }"
+                  @click="changeDocType('driver')"
+                >
+                  <span><i class="bi-car-front pe-1"></i> Driver Licence</span>
                 </div>
               </div>
             </div>
@@ -183,7 +210,7 @@ function changeTab(tabName) {
           </div>
           <div class="col-md-5" v-if="isUpload">
             <ul
-              class="nav nav-tabs justify-content-end mb-3"
+              class="nav nav-tabs justify-content-end mb-4"
               v-if="!responseSuccess"
             >
               <li class="nav-item cs-pointer" @click="uploadImage">
