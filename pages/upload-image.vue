@@ -107,6 +107,20 @@ async function uploadImage() {
         dd_number: "Document Discriminator",
       };
       parsedData.value = renameKeys(driverUpdatedKeys, extractedData.value);
+    } else if (docType.value == "Passport") {
+      const passportUpdatedKeys = {
+        birth_date: "Birth date",
+        birth_place: "Birth place",
+        country: "Country",
+        expiry_date: "Expiry Date",
+        gender: "Gender",
+        id_number: "Passport number",
+        issuance_date: "Issuance date",
+        mrz1: "MRZ row 1",
+        mrz2: "MRZ row 2",
+        surname: "Last name",
+      };
+      parsedData.value = renameKeys(passportUpdatedKeys, extractedData.value);
     }
 
     isLoading.value = false;
@@ -148,7 +162,18 @@ function changeDocType(type) {
     docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
   } else if (docType.value == "Driver License") {
     docApiUrl.value = runtimeConfig.public.apiBaseDriver;
+  } else if (docType.value == "Passport") {
+    docApiUrl.value = runtimeConfig.public.apiBasePassport;
   }
+}
+
+function goBack() {
+  isUpload.value = false;
+  responseSuccess.value = false;
+  imgFile.value = null;
+  imgPreview.value = null;
+  parsedData.value = null;
+  extractedData.value = null;
 }
 </script>
 
@@ -282,7 +307,7 @@ function changeDocType(type) {
               </li>
             </ul>
             <div>
-              <img :src="imgPreview" class="img-fluid py-3 preview-img" />
+              <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img" />
             </div>
           </div>
           <div class="col extracted-data" v-if="responseSuccess">
@@ -297,7 +322,7 @@ function changeDocType(type) {
               </template>
               <div
                 class="data-container"
-                v-if="docType.value == 'Invoice' && parsedData.taxes.length > 0"
+                v-if="docType == 'Invoice' && parsedData.taxes.length > 0"
               >
                 <div class="fw-bold key-name">Taxes</div>
                 <li
@@ -339,6 +364,21 @@ function changeDocType(type) {
                   <div>{{ extractedData.locale.currency }}</div>
                 </li>
               </div>
+              <div
+                class="data-container"
+                v-if="
+                  docType == 'Passport' && parsedData.given_names.length > 0
+                "
+              >
+                <div class="fw-bold key-name">Given names</div>
+                <li
+                  class="list-group-item mb-3"
+                  v-for="(name, index) in parsedData.given_names"
+                  :key="index"
+                >
+                  <div>{{ name.value }}</div>
+                </li>
+              </div>
             </ul>
             <ul
               class="list-group rounded-0"
@@ -358,6 +398,11 @@ function changeDocType(type) {
                 </div>
               </li>
             </ul>
+            <div class="text-end mt-5">
+              <button type="button" class="btn btn-primary" @click="goBack">
+                <i class="bi-arrow-left-short"></i> Go back
+              </button>
+            </div>
           </div>
         </div>
       </div>

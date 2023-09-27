@@ -10,6 +10,7 @@ export default defineNuxtConfig({
       apiBaseInvoice: process.env.API_MINDEE_INVOICE_URL,
       apiBaseReceipt: process.env.API_MINDEE_RECEIPT_URL,
       apiBaseDriver: process.env.API_MINDEE_DRIVER_URL,
+      apiBasePassport: process.env.API_MINDEE_PASSPORT_URL,
       apiKey: process.env.API_MINDEE_KEY,
     },
   },
