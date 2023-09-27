@@ -17,7 +17,7 @@ const allowedTypes = ref([
   "image/tiff",
 ]);
 const parsedData = ref(null);
-const docType = ref("invoice");
+const docType = ref("Invoice");
 const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
 
 function onChange(e) {
@@ -52,7 +52,7 @@ async function uploadImage() {
   if (data.value.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
 
-    if (extractedData.value.document_type.value == "INVOICE") {
+    if (docType.value == "Invoice") {
       const invoiceUpdatedKeys = {
         customer_address: "Customer address",
         customer_company_registrations: "Customer registration",
@@ -68,7 +68,7 @@ async function uploadImage() {
         total_net: "Total net",
       };
       parsedData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
-    } else if (extractedData.value.document_type.value == "EXPENSE RECEIPT") {
+    } else if (docType.value == "Expense Receipt") {
       const receiptUpdatedKeys = {
         total_amount: "Total amount",
         total_tax: "Total tax",
@@ -86,6 +86,27 @@ async function uploadImage() {
         locale: "Language",
       };
       parsedData.value = renameKeys(receiptUpdatedKeys, extractedData.value);
+    } else if (docType.value == "Driver License") {
+      const driverUpdatedKeys = {
+        address: "Address",
+        state: "State",
+        driver_license_id: "Driver License ID",
+        expiry_date: "Expiry Date",
+        issued_date: "Date Of Issue",
+        last_name: "Last Name",
+        first_name: "First Name",
+        date_of_birth: "Date Of Birth",
+        restrictions: "Restrictions",
+        endorsements: "Endorsements",
+        dl_class: "Driver License Class",
+        sex: "Sex",
+        weight: "Weight",
+        height: "Height",
+        hair_color: "Hair Color",
+        eye_color: "Eye Color",
+        dd_number: "Document Discriminator",
+      };
+      parsedData.value = renameKeys(driverUpdatedKeys, extractedData.value);
     }
 
     isLoading.value = false;
@@ -121,11 +142,11 @@ function changeTab(tabName) {
 function changeDocType(type) {
   docType.value = type;
 
-  if (docType.value == "invoice") {
+  if (docType.value == "Invoice") {
     docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
-  } else if (docType.value == "receipt") {
+  } else if (docType.value == "Expense Receipt") {
     docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
-  } else if (docType.value == "driver") {
+  } else if (docType.value == "Driver License") {
     docApiUrl.value = runtimeConfig.public.apiBaseDriver;
   }
 }
@@ -137,7 +158,8 @@ function changeDocType(type) {
       <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
       <div class="card upload-card p-4">
         <h5 v-if="responseSuccess" class="mt-3 mb-0">
-          EXTRACTED DATA FROM YOUR {{ extractedData.document_type.value }}
+          EXTRACTED DATA FROM YOUR
+          <span class="text-uppercase">{{ docType }}</span>
         </h5>
         <div class="row my-4 justify-content-center">
           <div class="col-md-6" v-if="!isUpload">
@@ -146,8 +168,8 @@ function changeDocType(type) {
               <div class="col">
                 <div
                   class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'invoice' }"
-                  @click="changeDocType('invoice')"
+                  :class="{ typeActive: docType == 'Invoice' }"
+                  @click="changeDocType('Invoice')"
                 >
                   <span><i class="bi-file-earmark-text pe-1"></i> Invoice</span>
                 </div>
@@ -155,8 +177,8 @@ function changeDocType(type) {
               <div class="col">
                 <div
                   class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'receipt' }"
-                  @click="changeDocType('receipt')"
+                  :class="{ typeActive: docType == 'Expense Receipt' }"
+                  @click="changeDocType('Expense Receipt')"
                 >
                   <span><i class="bi-receipt pe-1"></i> Receipt</span>
                 </div>
@@ -164,8 +186,8 @@ function changeDocType(type) {
               <div class="col">
                 <div
                   class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'driver' }"
-                  @click="changeDocType('driver')"
+                  :class="{ typeActive: docType == 'Driver License' }"
+                  @click="changeDocType('Driver License')"
                 >
                   <span><i class="bi-car-front pe-1"></i> Driver Licence</span>
                 </div>
@@ -266,10 +288,7 @@ function changeDocType(type) {
               </template>
               <div
                 class="data-container"
-                v-if="
-                  extractedData.document_type.value == 'INVOICE' &&
-                  parsedData.taxes.length > 0
-                "
+                v-if="docType.value == 'Invoice' && parsedData.taxes.length > 0"
               >
                 <div class="fw-bold key-name">Taxes</div>
                 <li
@@ -296,37 +315,39 @@ function changeDocType(type) {
                   <div>{{ reference.value }}</div>
                 </li>
               </div>
-              <div class="data-container" v-if="!extractedData.locale.value">
+              <div
+                class="data-container"
+                v-if="extractedData.locale && !extractedData.locale.value"
+              >
                 <div class="fw-bold key-name">Language</div>
                 <li class="list-group-item mb-3">
                   <div>{{ parsedData.locale.language }}</div>
                 </li>
               </div>
-              <div class="data-container">
+              <div class="data-container" v-if="extractedData.locale">
                 <div class="fw-bold key-name">Currency</div>
                 <li class="list-group-item">
                   <div>{{ extractedData.locale.currency }}</div>
                 </li>
               </div>
             </ul>
-            <ul class="list-group rounded-0">
-              <div v-if="parsedData.line_items.length > 0">
-                <div class="fw-bold key-name">Line Items</div>
-                <li
-                  class="list-group-item mb-3"
-                  v-for="(item, index) in parsedData.line_items"
-                  :key="index"
-                >
-                  <div>
-                    {{ item.quantity || 1 }}- {{ item.description }}
-                    <span v-if="item.unit_price"
-                      >x {{ item.unit_price }}.00</span
-                    >
-                    -
-                    {{ item.total_amount }}
-                  </div>
-                </li>
-              </div>
+            <ul
+              class="list-group rounded-0"
+              v-if="parsedData.line_items && parsedData.line_items.length > 0"
+            >
+              <div class="fw-bold key-name">Line Items</div>
+              <li
+                class="list-group-item mb-3"
+                v-for="(item, index) in parsedData.line_items"
+                :key="index"
+              >
+                <div>
+                  {{ item.quantity || 1 }}- {{ item.description }}
+                  <span v-if="item.unit_price">x {{ item.unit_price }}.00</span>
+                  -
+                  {{ item.total_amount }}
+                </div>
+              </li>
             </ul>
           </div>
         </div>
