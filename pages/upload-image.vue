@@ -165,31 +165,40 @@ function changeDocType(type) {
           <div class="col-md-6" v-if="!isUpload">
             <div class="row mb-5 text-center">
               <h5 class="mb-4">Select document type you want process</h5>
-              <div class="col">
+              <div class="col-md-3">
                 <div
                   class="card doc-type-card p-2"
                   :class="{ typeActive: docType == 'Invoice' }"
                   @click="changeDocType('Invoice')"
                 >
-                  <span><i class="bi-file-earmark-text pe-1"></i> Invoice</span>
+                  <i class="bi-file-earmark-text pe-1"></i> <span>Invoice</span>
                 </div>
               </div>
-              <div class="col">
+              <div class="col-md-3">
                 <div
                   class="card doc-type-card p-2"
                   :class="{ typeActive: docType == 'Expense Receipt' }"
                   @click="changeDocType('Expense Receipt')"
                 >
-                  <span><i class="bi-receipt pe-1"></i> Receipt</span>
+                  <i class="bi-receipt pe-1"></i> <span>Receipt</span>
                 </div>
               </div>
-              <div class="col">
+              <div class="col-md-3">
                 <div
                   class="card doc-type-card p-2"
                   :class="{ typeActive: docType == 'Driver License' }"
                   @click="changeDocType('Driver License')"
                 >
-                  <span><i class="bi-car-front pe-1"></i> Driver Licence</span>
+                  <i class="bi-car-front pe-1"></i> <span>Driver Licence</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div
+                  class="card doc-type-card p-2"
+                  :class="{ typeActive: docType == 'Passport' }"
+                  @click="changeDocType('Passport')"
+                >
+                  <i class="bi-journal-medical pe-1"></i> <span>Passport</span>
                 </div>
               </div>
             </div>

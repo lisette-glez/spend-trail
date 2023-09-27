@@ -80,7 +80,13 @@ textarea {
     cursor: pointer;
 }
 
-.doc-type-card i, .bi-upload {
+.doc-type-card i
+{
+    color: #578fff;
+    font-size: 1.5rem;
+}
+
+.bi-upload {
     color: #578fff;
 }
 
