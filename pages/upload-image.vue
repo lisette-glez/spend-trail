@@ -16,7 +16,7 @@ const allowedTypes = ref([
   "image/heic",
   "image/tiff",
 ]);
-const invoiceData = ref(null);
+const parsedData = ref(null);
 const docType = ref("invoice");
 const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
 
@@ -40,7 +40,6 @@ function onChange(e) {
 
 async function uploadImage() {
   isLoading.value = true;
-  const config = null;
   const formData = new FormData();
   formData.append("document", imgFile.value);
 
@@ -52,22 +51,43 @@ async function uploadImage() {
 
   if (data.value.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
-    const invoiceUpdatedKeys = {
-      customer_address: "Customer address",
-      customer_company_registrations: "Customer registration",
-      customer_name: "Customer",
-      document_type: "Tipo de documento",
-      date: "Date",
-      due_date: "Due date",
-      supplier_name: "Supplier",
-      supplier_address: "Supplier address",
-      supplier_company_registrations: "Supplier registration",
-      invoice_number: "Invoice number",
-      total_amount: "Total amount",
-      total_net: "Total net",
-    };
 
-    invoiceData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
+    if (extractedData.value.document_type.value == "INVOICE") {
+      const invoiceUpdatedKeys = {
+        customer_address: "Customer address",
+        customer_company_registrations: "Customer registration",
+        customer_name: "Customer",
+        document_type: "Document type",
+        date: "Date",
+        due_date: "Due date",
+        supplier_name: "Supplier",
+        supplier_address: "Supplier address",
+        supplier_company_registrations: "Supplier registration",
+        invoice_number: "Invoice number",
+        total_amount: "Total amount",
+        total_net: "Total net",
+      };
+      parsedData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
+    } else if (extractedData.value.document_type.value == "EXPENSE RECEIPT") {
+      const receiptUpdatedKeys = {
+        total_amount: "Total amount",
+        total_tax: "Total tax",
+        tip: "Tip",
+        total_net: "Total net",
+        category: "Category",
+        subcategory: "Subcategory",
+        date: "Purchase Date",
+        time: "Purchase Time",
+        supplier_name: "Supplier name",
+        supplier_address: "Supplier address",
+        supplier_phone_number: "Supplier phone",
+        supplier_company_registrations: "Supplier IDs",
+        document_type: "Document type",
+        locale: "Language",
+      };
+      parsedData.value = renameKeys(receiptUpdatedKeys, extractedData.value);
+    }
+
     isLoading.value = false;
     responseSuccess.value = true;
   }
@@ -234,72 +254,79 @@ function changeDocType(type) {
               <img :src="imgPreview" class="img-fluid py-3 preview-img" />
             </div>
           </div>
-          <div class="col-md-3 extracted-data" v-if="responseSuccess">
-            <ul class="list-group rounded-0">
-              <div v-for="(text, key, index) in invoiceData" :key="index">
-                <div v-if="text.value != null">
+          <div class="col extracted-data" v-if="responseSuccess">
+            <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
+              <template v-for="(text, key) in parsedData" :key="key">
+                <div v-if="text.value != null" class="data-container">
                   <div class="fw-bold key-name">{{ key }}</div>
                   <li class="list-group-item mb-3">
                     <div>{{ text.value }}</div>
                   </li>
                 </div>
+              </template>
+              <div
+                class="data-container"
+                v-if="
+                  extractedData.document_type.value == 'INVOICE' &&
+                  parsedData.taxes.length > 0
+                "
+              >
+                <div class="fw-bold key-name">Taxes</div>
+                <li
+                  class="list-group-item mb-3"
+                  v-for="(tax, index) in parsedData.taxes"
+                  :key="index"
+                >
+                  <div>{{ tax.rate }}% - {{ tax.value }}</div>
+                </li>
+              </div>
+              <div
+                class="data-container"
+                v-if="
+                  parsedData.reference_numbers &&
+                  parsedData.reference_numbers.length > 0
+                "
+              >
+                <div class="fw-bold key-name">PO #</div>
+                <li
+                  class="list-group-item mb-3"
+                  v-for="(reference, index) in parsedData.reference_numbers"
+                  :key="index"
+                >
+                  <div>{{ reference.value }}</div>
+                </li>
+              </div>
+              <div class="data-container" v-if="!extractedData.locale.value">
+                <div class="fw-bold key-name">Language</div>
+                <li class="list-group-item mb-3">
+                  <div>{{ parsedData.locale.language }}</div>
+                </li>
+              </div>
+              <div class="data-container">
+                <div class="fw-bold key-name">Currency</div>
+                <li class="list-group-item">
+                  <div>{{ extractedData.locale.currency }}</div>
+                </li>
               </div>
             </ul>
-          </div>
-          <div class="col-md-4 extracted-data" v-if="responseSuccess">
-            <ul
-              class="list-group rounded-0"
-              v-if="invoiceData.line_items.length > 0"
-            >
-              <div class="fw-bold key-name">Line Items</div>
-              <li
-                class="list-group-item mb-3"
-                v-for="(item, index) in invoiceData.line_items"
-                :key="index"
-              >
-                <div>
-                  {{ item.quantity || 1 }}- {{ item.description }} x
-                  {{ item.unit_price }}.00 - {{ item.total_amount }}.00
-                </div>
-              </li>
-            </ul>
-            <ul
-              class="list-group rounded-0"
-              v-if="invoiceData.reference_numbers.length > 0"
-            >
-              <div class="fw-bold key-name">PO #</div>
-              <li
-                class="list-group-item"
-                v-for="(reference, index) in invoiceData.reference_numbers"
-                :key="index"
-              >
-                <div>{{ reference.value }}</div>
-              </li>
-            </ul>
-            <ul
-              class="list-group rounded-0"
-              v-if="invoiceData.taxes.length > 0"
-            >
-              <div class="fw-bold key-name">Taxes</div>
-              <li
-                class="list-group-item"
-                v-for="(tax, index) in invoiceData.taxes"
-                :key="index"
-              >
-                <div>{{ tax.rate }}% - {{ tax.value }}</div>
-              </li>
-            </ul>
             <ul class="list-group rounded-0">
-              <div class="fw-bold key-name">Language</div>
-              <li class="list-group-item">
-                <div>{{ invoiceData.locale.language }}</div>
-              </li>
-            </ul>
-            <ul class="list-group rounded-0">
-              <div class="fw-bold key-name">Currency</div>
-              <li class="list-group-item">
-                <div>{{ invoiceData.locale.currency }}</div>
-              </li>
+              <div v-if="parsedData.line_items.length > 0">
+                <div class="fw-bold key-name">Line Items</div>
+                <li
+                  class="list-group-item mb-3"
+                  v-for="(item, index) in parsedData.line_items"
+                  :key="index"
+                >
+                  <div>
+                    {{ item.quantity || 1 }}- {{ item.description }}
+                    <span v-if="item.unit_price"
+                      >x {{ item.unit_price }}.00</span
+                    >
+                    -
+                    {{ item.total_amount }}
+                  </div>
+                </li>
+              </div>
             </ul>
           </div>
         </div>
