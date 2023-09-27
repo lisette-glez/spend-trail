@@ -4,7 +4,6 @@ const isUpload = ref(false);
 const isLoading = ref(false);
 const imgFile = ref(null);
 const imgPreview = ref(null);
-const extractedData = ref(null);
 const responseSuccess = ref(false);
 const activeTab = ref("device");
 const errorAlert = ref(false);
@@ -16,9 +15,10 @@ const allowedTypes = ref([
   "image/heic",
   "image/tiff",
 ]);
+const extractedData = ref(null);
 const parsedData = ref(null);
-const docType = ref("Invoice");
 const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
+const selectedType = ref(null);
 
 function onChange(e) {
   imgFile.value = e.files[0];
@@ -52,7 +52,7 @@ async function uploadImage() {
   if (data.value.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
 
-    if (docType.value == "Invoice") {
+    if (selectedType.value == "Invoice") {
       const invoiceUpdatedKeys = {
         customer_address: "Customer address",
         customer_company_registrations: "Customer registration",
@@ -68,7 +68,7 @@ async function uploadImage() {
         total_net: "Total net",
       };
       parsedData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
-    } else if (docType.value == "Expense Receipt") {
+    } else if (selectedType.value == "Expense Receipt") {
       const receiptUpdatedKeys = {
         total_amount: "Total amount",
         total_tax: "Total tax",
@@ -86,7 +86,7 @@ async function uploadImage() {
         locale: "Language",
       };
       parsedData.value = renameKeys(receiptUpdatedKeys, extractedData.value);
-    } else if (docType.value == "Driver License") {
+    } else if (selectedType.value == "Driver License") {
       const driverUpdatedKeys = {
         address: "Address",
         state: "State",
@@ -107,7 +107,7 @@ async function uploadImage() {
         dd_number: "Document Discriminator",
       };
       parsedData.value = renameKeys(driverUpdatedKeys, extractedData.value);
-    } else if (docType.value == "Passport") {
+    } else if (selectedType.value == "Passport") {
       const passportUpdatedKeys = {
         birth_date: "Birth date",
         birth_place: "Birth place",
@@ -149,22 +149,22 @@ function getUrl(url) {
   isUpload.value = true;
 }
 
-function changeTab(tabName) {
-  activeTab.value = tabName;
-}
-
-function changeDocType(type) {
-  docType.value = type;
-
-  if (docType.value == "Invoice") {
+function getDocType(type) {
+  selectedType.value = type;
+  if (selectedType.value == "Invoice") {
     docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
-  } else if (docType.value == "Expense Receipt") {
+  } else if (selectedType.value == "Expense Receipt") {
     docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
-  } else if (docType.value == "Driver License") {
+  } else if (selectedType.value == "Driver License") {
     docApiUrl.value = runtimeConfig.public.apiBaseDriver;
-  } else if (docType.value == "Passport") {
+  } else if (selectedType.value == "Passport") {
     docApiUrl.value = runtimeConfig.public.apiBasePassport;
   }
+  uploadImage();
+}
+
+function changeTab(tabName) {
+  activeTab.value = tabName;
 }
 
 function goBack() {
@@ -174,6 +174,7 @@ function goBack() {
   imgPreview.value = null;
   parsedData.value = null;
   extractedData.value = null;
+  selectedType.value = null;
 }
 </script>
 
@@ -184,49 +185,10 @@ function goBack() {
       <div class="card upload-card p-4">
         <h5 v-if="responseSuccess" class="mt-3 mb-0">
           EXTRACTED DATA FROM YOUR
-          <span class="text-uppercase">{{ docType }}</span>
+          <span class="text-uppercase">{{ selectedType }}</span>
         </h5>
         <div class="row my-4 justify-content-center">
           <div class="col-md-6" v-if="!isUpload">
-            <div class="row mb-5 text-center">
-              <h5 class="mb-4">Select document type you want process</h5>
-              <div class="col-md-3">
-                <div
-                  class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'Invoice' }"
-                  @click="changeDocType('Invoice')"
-                >
-                  <i class="bi-file-earmark-text pe-1"></i> <span>Invoice</span>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div
-                  class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'Expense Receipt' }"
-                  @click="changeDocType('Expense Receipt')"
-                >
-                  <i class="bi-receipt pe-1"></i> <span>Receipt</span>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div
-                  class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'Driver License' }"
-                  @click="changeDocType('Driver License')"
-                >
-                  <i class="bi-car-front pe-1"></i> <span>Driver Licence</span>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div
-                  class="card doc-type-card p-2"
-                  :class="{ typeActive: docType == 'Passport' }"
-                  @click="changeDocType('Passport')"
-                >
-                  <i class="bi-journal-medical pe-1"></i> <span>Passport</span>
-                </div>
-              </div>
-            </div>
             <ul class="nav nav-tabs justify-content-end">
               <li class="nav-item cs-pointer" @click="changeTab('device')">
                 <a class="nav-link" :class="{ active: activeTab == 'device' }"
@@ -284,12 +246,17 @@ function goBack() {
               v-if="activeTab == 'link' && !isUpload"
             />
           </div>
+          <DocTypeModal @selectedDocType="getDocType" />
           <div class="col-md-5" v-if="isUpload">
             <ul
               class="nav nav-tabs justify-content-end mb-4"
               v-if="!responseSuccess"
             >
-              <li class="nav-item cs-pointer" @click="uploadImage">
+              <li
+                class="nav-item cs-pointer"
+                data-bs-toggle="modal"
+                data-bs-target="#myModal"
+              >
                 <div class="nav-link">
                   <i class="bi-upload pe-1"></i> Upload
                   <span
@@ -307,7 +274,10 @@ function goBack() {
               </li>
             </ul>
             <div>
-              <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img" />
+              <img
+                :src="imgPreview"
+                class="img-fluid py-3 px-2 preview-img w-100"
+              />
             </div>
           </div>
           <div class="col extracted-data" v-if="responseSuccess">
@@ -322,7 +292,7 @@ function goBack() {
               </template>
               <div
                 class="data-container"
-                v-if="docType == 'Invoice' && parsedData.taxes.length > 0"
+                v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
               >
                 <div class="fw-bold key-name">Taxes</div>
                 <li
@@ -367,7 +337,8 @@ function goBack() {
               <div
                 class="data-container"
                 v-if="
-                  docType == 'Passport' && parsedData.given_names.length > 0
+                  selectedType == 'Passport' &&
+                  parsedData.given_names.length > 0
                 "
               >
                 <div class="fw-bold key-name">Given names</div>
