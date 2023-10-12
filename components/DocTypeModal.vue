@@ -76,7 +76,7 @@ function changeDocType(type: string) {
             data-bs-dismiss="modal"
             @click="emit('selectedDocType', docType)"
           >
-            <i class="bi-save pe-2"></i>Save
+            <i class="bi-check-circle pe-2"></i>Accept
           </button>
         </div>
       </div>

@@ -1,37 +1,31 @@
-<script setup>
+<script setup lang="ts">
 const runtimeConfig = useRuntimeConfig();
 const isUpload = ref(false);
 const isLoading = ref(false);
-const imgFile = ref(null);
-const imgPreview = ref(null);
+const imgFile = ref("");
+const imgPreview = ref("");
 const responseSuccess = ref(false);
 const activeTab = ref("device");
 const errorAlert = ref(false);
-const errorMessage = ref(null);
-const allowedTypes = ref([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/heic",
-  "image/tiff",
-]);
+const errorMessage = ref("");
 const extractedData = ref(null);
-const parsedData = ref(null);
+const parsedData = ref({});
 const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
-const selectedType = ref(null);
+const selectedType = ref("");
+const uploadInput = ref<HTMLInputElement | null>(null);
 
-function onChange(e) {
-  imgFile.value = e.files[0];
-  if (allowedTypes.value.includes(imgFile.value.type)) {
-    isUpload.value = true;
-    //image preview
+function onChange(e: any) {
+  if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
     let reader = new FileReader();
-    reader.readAsDataURL(imgFile.value);
-    reader.onload = (e) => {
-      imgPreview.value = e.target.result;
+    reader.readAsDataURL(e.files[0]);
+    reader.onload = (e: any) => {
+      imgPreview.value = e.target!.result;
     };
+    imgFile.value = e.files[0];
+    isUpload.value = true;
+    errorAlert.value = false;
   } else {
-    imgFile.value = null;
+    imgFile.value = "";
     errorMessage.value =
       "File type not allowed. You can upload only jpg, png, webp, heic and tiff images.";
     errorAlert.value = true;
@@ -43,7 +37,7 @@ async function uploadImage() {
   const formData = new FormData();
   formData.append("document", imgFile.value);
 
-  const { data } = await useFetch(docApiUrl, {
+  const { data } = await useFetch<any>(docApiUrl, {
     method: "post",
     headers: { Authorization: "Token " + runtimeConfig.public.apiKey },
     body: formData,
@@ -52,75 +46,22 @@ async function uploadImage() {
   if (data.value.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
 
-    if (selectedType.value == "Invoice") {
-      const invoiceUpdatedKeys = {
-        customer_address: "Customer address",
-        customer_company_registrations: "Customer registration",
-        customer_name: "Customer",
-        document_type: "Document type",
-        date: "Date",
-        due_date: "Due date",
-        supplier_name: "Supplier",
-        supplier_address: "Supplier address",
-        supplier_company_registrations: "Supplier registration",
-        invoice_number: "Invoice number",
-        total_amount: "Total amount",
-        total_net: "Total net",
-      };
-      parsedData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
-    } else if (selectedType.value == "Expense Receipt") {
-      const receiptUpdatedKeys = {
-        total_amount: "Total amount",
-        total_tax: "Total tax",
-        tip: "Tip",
-        total_net: "Total net",
-        category: "Category",
-        subcategory: "Subcategory",
-        date: "Purchase Date",
-        time: "Purchase Time",
-        supplier_name: "Supplier name",
-        supplier_address: "Supplier address",
-        supplier_phone_number: "Supplier phone",
-        supplier_company_registrations: "Supplier IDs",
-        document_type: "Document type",
-        locale: "Language",
-      };
-      parsedData.value = renameKeys(receiptUpdatedKeys, extractedData.value);
-    } else if (selectedType.value == "Driver License") {
-      const driverUpdatedKeys = {
-        address: "Address",
-        state: "State",
-        driver_license_id: "Driver License ID",
-        expiry_date: "Expiry Date",
-        issued_date: "Date Of Issue",
-        last_name: "Last Name",
-        first_name: "First Name",
-        date_of_birth: "Date Of Birth",
-        restrictions: "Restrictions",
-        endorsements: "Endorsements",
-        dl_class: "Driver License Class",
-        sex: "Sex",
-        weight: "Weight",
-        height: "Height",
-        hair_color: "Hair Color",
-        eye_color: "Eye Color",
-        dd_number: "Document Discriminator",
-      };
-      parsedData.value = renameKeys(driverUpdatedKeys, extractedData.value);
-    } else if (selectedType.value == "Passport") {
-      const passportUpdatedKeys = {
-        birth_date: "Birth date",
-        birth_place: "Birth place",
-        country: "Country",
-        expiry_date: "Expiry Date",
-        gender: "Gender",
-        id_number: "Passport number",
-        issuance_date: "Issuance date",
-        mrz1: "MRZ row 1",
-        mrz2: "MRZ row 2",
-        surname: "Last name",
-      };
-      parsedData.value = renameKeys(passportUpdatedKeys, extractedData.value);
+    switch (selectedType.value) {
+      case "Invoice":
+        parsedData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
+        break;
+
+      case "Expense Receipt":
+        parsedData.value = renameKeys(receiptUpdatedKeys, extractedData.value);
+        break;
+
+      case "Driver License":
+        parsedData.value = renameKeys(driverUpdatedKeys, extractedData.value);
+        break;
+
+      case "Passport":
+        parsedData.value = renameKeys(passportUpdatedKeys, extractedData.value);
+        break;
     }
 
     isLoading.value = false;
@@ -128,53 +69,55 @@ async function uploadImage() {
   }
 }
 
-function renameKeys(keysMap, obj) {
-  return Object.keys(obj).reduce(
-    (acc, key) => ({
-      ...acc,
-      ...{ [keysMap[key] || key]: obj[key] },
-    }),
-    {}
-  );
-}
-
 function cancelUpload() {
-  imgFile.value = null;
-  imgPreview.value = null;
+  imgFile.value = "";
+  imgPreview.value = "";
   isUpload.value = false;
 }
 
-function getUrl(url) {
+function getUrl(url: string) {
   imgFile.value = imgPreview.value = url;
   isUpload.value = true;
 }
 
-function getDocType(type) {
+function getDocType(type: string) {
   selectedType.value = type;
-  if (selectedType.value == "Invoice") {
-    docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
-  } else if (selectedType.value == "Expense Receipt") {
-    docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
-  } else if (selectedType.value == "Driver License") {
-    docApiUrl.value = runtimeConfig.public.apiBaseDriver;
-  } else if (selectedType.value == "Passport") {
-    docApiUrl.value = runtimeConfig.public.apiBasePassport;
+  switch (selectedType.value) {
+    case "Invoice":
+      docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
+      break;
+
+    case "Expense Receipt":
+      docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
+      break;
+
+    case "Driver License":
+      docApiUrl.value = runtimeConfig.public.apiBaseDriver;
+      break;
+
+    case "Passport":
+      docApiUrl.value = runtimeConfig.public.apiBasePassport;
+      break;
   }
   uploadImage();
 }
 
-function changeTab(tabName) {
+function changeTab(tabName: string) {
   activeTab.value = tabName;
 }
 
 function goBack() {
   isUpload.value = false;
   responseSuccess.value = false;
-  imgFile.value = null;
-  imgPreview.value = null;
-  parsedData.value = null;
+  imgFile.value = "";
+  imgPreview.value = "";
+  parsedData.value = {};
   extractedData.value = null;
-  selectedType.value = null;
+  selectedType.value = "";
+}
+
+function triggerUpload() {
+  uploadInput.value?.click();
 }
 </script>
 
@@ -211,11 +154,7 @@ function goBack() {
                 @drop.prevent="onChange($event.dataTransfer)"
                 :class="{ noPaddingTop: isUpload }"
               >
-                <div
-                  class="file-input"
-                  v-if="!isUpload"
-                  @click="$refs.file.click()"
-                >
+                <div class="file-input" v-if="!isUpload" @click="triggerUpload">
                   <div for="file">
                     <img
                       src="~/assets/img/upload-img.png"
@@ -223,7 +162,7 @@ function goBack() {
                     />
                     <input
                       type="file"
-                      ref="file"
+                      ref="uploadInput"
                       @change="onChange($event.target)"
                     />
                   </div>
@@ -233,7 +172,7 @@ function goBack() {
                     <p
                       class="h6 upload-title"
                       v-if="!isUpload"
-                      @click="$refs.file.click()"
+                      @click="triggerUpload"
                     >
                       Click to browse, or drag and drop an image here
                     </p>
