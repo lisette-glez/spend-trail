@@ -1,4 +1,4 @@
-const receiptUpdatedKeys = {
+export const receiptUpdatedKeys = {
   total_amount: "Total amount",
   total_tax: "Total tax",
   tip: "Tip",

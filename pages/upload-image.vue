@@ -185,7 +185,6 @@ function triggerUpload() {
               v-if="activeTab == 'link' && !isUpload"
             />
           </div>
-          <DocTypeModal @selectedDocType="getDocType" />
           <div class="col-md-5" v-if="isUpload">
             <ul
               class="nav nav-tabs justify-content-end mb-4"
@@ -315,6 +314,7 @@ function triggerUpload() {
             </div>
           </div>
         </div>
+        <DocTypeModal @selectedDocType="getDocType" />
       </div>
     </div>
   </section>

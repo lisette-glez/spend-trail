@@ -1,5 +1,10 @@
 <template>
   <nav class="navbar navbar-expand bg-white py-3 shadow-sm">
+    <div>
+      <span class="navbar-brand fw-bold ms-4 text-primary" href="#"
+        >Image2Text</span
+      >
+    </div>
     <ul class="navbar-nav ms-auto">
       <li class="nav-item cs-pointer me-3">
         <NuxtLink to="/" class="nav-link"
