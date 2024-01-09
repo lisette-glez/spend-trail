@@ -27,21 +27,31 @@ const handleLogin = async () => {
   }
 };
 
-// const loginGoogle = async () => {
-//   const { error } = await supabase.auth.signInWithOAuth({
-//     provider: "google",
-//   });
+const loginGoogle = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
+      },
+      redirectTo: "http://localhost:3000/confirm",
+    },
+  });
 
-//   if (error) {
-//     console.error(error);
-//   }
-// };
+  if (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <template>
   <div>
-    <div>
+    <div class="mt-4">
       <button @click="handleLogin">Sign In with Github</button>
+    </div>
+    <div class="mt-3">
+      <button @click="loginGoogle">Sign In with Google</button>
     </div>
     <!-- <div>
       <button @click="loginGoogle">Sign In with Google</button>
