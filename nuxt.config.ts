@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     "bootstrap/dist/css/bootstrap.css",
     "bootstrap-icons/font/bootstrap-icons.css",
   ],
+  modules: ["@nuxtjs/supabase"],
   plugins: [{ src: "~/plugins/bootstrap.js", mode: "client" }],
   runtimeConfig: {
     public: {
