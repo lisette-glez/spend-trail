@@ -19,10 +19,10 @@ const logout = async () => {
 
 <template>
   <nav class="navbar navbar-expand container-xxl">
-    <div>
-      <img src="~/assets/img/logo.png" class="w-75" />
-    </div>
-    <ul class="navbar-nav ms-auto">
+    <NuxtLink to="/" class="nav-link">
+      <img src="~/assets/img/logo.png" class="w-75"
+    /></NuxtLink>
+    <ul class="navbar-nav me-auto">
       <li class="nav-item cs-pointer me-4">
         <NuxtLink to="/" class="nav-link"
           ><span class="text-light fs-5">About</span></NuxtLink
@@ -34,7 +34,7 @@ const logout = async () => {
         >
       </li>
     </ul>
-    <ul class="navbar-nav ms-auto me-5">
+    <ul class="navbar-nav me-auto">
       <li class="nav-item">
         <NuxtLink
           to="https://www.linkedin.com/in/lisette-gonzalez/"
@@ -59,22 +59,24 @@ const logout = async () => {
           ><i class="bi bi-github"></i
         ></NuxtLink>
       </li>
-      <li class="nav-item">
-        <div class="vr h-75 ms-2 text-white align-text-top"></div>
-      </li>
-      <li class="nav-item cs-pointer ms-3">
-        <img
-          class="img-thumbnail rounded-circle"
-          style="width: 2.5rem; height: 2.5rem"
-          :src="profile"
-        />
-        <span class="ms-2 text-primary"> {{ name }}</span>
-      </li>
-      <li class="nav-item cs-pointer me-3">
-        <NuxtLink @click="logout" class="nav-link"
-          ><span class="text-light fs-5">Logout</span></NuxtLink
-        >
-      </li>
+      <template v-if="user"
+        ><li class="nav-item">
+          <div class="vr h-75 ms-2 text-white align-text-top"></div>
+        </li>
+        <li class="nav-item cs-pointer ms-3">
+          <img
+            class="img-thumbnail rounded-circle"
+            style="width: 2.5rem; height: 2.5rem"
+            :src="profile"
+          />
+          <span class="ms-2 text-primary"> {{ name }}</span>
+        </li>
+        <li class="nav-item cs-pointer me-3">
+          <NuxtLink @click="logout" class="nav-link"
+            ><span class="text-light fs-5">Logout</span></NuxtLink
+          >
+        </li></template
+      >
     </ul>
   </nav>
 </template>
