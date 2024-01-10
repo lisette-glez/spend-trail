@@ -1,6 +1,28 @@
 body {
-    font-family: sans-serif;  
-    background-color: #edf3ff;
+    font-family: monospace;  
+    background-image: linear-gradient(to right, #74ebd5 0%, #9face6 100%);
+}
+
+.github-btn {
+    background-color: #1A7F37;
+    border-color:#1A7F37;
+    font-weight: 500;
+    font-size: 16px; 
+}
+
+.github-btn:hover {
+    background-color: #1a6630;
+    border-color: #1a6630;  
+}
+
+.card-login .bi-person-circle {
+    font-size: 5rem;
+    color: #74ebd5
+}
+
+.card-login p{
+    font-size: 12px;   
+    margin-bottom: 0.5rem;
 }
 
 /* upload component */
