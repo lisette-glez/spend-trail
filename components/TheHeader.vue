@@ -18,24 +18,51 @@ const logout = async () => {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand py-3">
+  <nav class="navbar navbar-expand container-xxl">
     <div>
-      <span class="navbar-brand fw-bold ms-4 text-primary" href="#"
-        >Image2Text</span
-      >
+      <img src="~/assets/img/logo.png" class="w-75" />
     </div>
-    <ul class="navbar-nav ms-auto" v-if="user">
-      <li class="nav-item cs-pointer me-3">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item cs-pointer me-4">
         <NuxtLink to="/" class="nav-link"
-          ><span class="text-primary">About</span></NuxtLink
+          ><span class="text-light fs-5">About</span></NuxtLink
         >
       </li>
       <li class="nav-item cs-pointer me-3">
         <NuxtLink to="/upload-image" class="nav-link"
-          ><span class="text-primary">Live demo</span></NuxtLink
+          ><span class="text-light fs-5">Live demo</span></NuxtLink
         >
       </li>
-      <li class="nav-item cs-pointer me-3">
+    </ul>
+    <ul class="navbar-nav ms-auto me-5">
+      <li class="nav-item">
+        <NuxtLink
+          to="https://www.linkedin.com/in/lisette-gonzalez/"
+          target="_blank"
+          class="nav-link text-light fs-5"
+          ><i class="bi bi-linkedin"></i
+        ></NuxtLink>
+      </li>
+      <li class="nav-item">
+        <NuxtLink
+          to="https://lisette.dev"
+          target="_blank"
+          class="nav-link text-light fs-5"
+          ><i class="bi bi-link-45deg"></i
+        ></NuxtLink>
+      </li>
+      <li class="nav-item">
+        <NuxtLink
+          to="https://github.com/lisette900809/image2text"
+          target="_blank"
+          class="nav-link text-light fs-5"
+          ><i class="bi bi-github"></i
+        ></NuxtLink>
+      </li>
+      <li class="nav-item">
+        <div class="vr h-75 ms-2 text-white align-text-top"></div>
+      </li>
+      <li class="nav-item cs-pointer ms-3">
         <img
           class="img-thumbnail rounded-circle"
           style="width: 2.5rem; height: 2.5rem"
@@ -45,7 +72,7 @@ const logout = async () => {
       </li>
       <li class="nav-item cs-pointer me-3">
         <NuxtLink @click="logout" class="nav-link"
-          ><span class="text-primary">Logout</span></NuxtLink
+          ><span class="text-light fs-5">Logout</span></NuxtLink
         >
       </li>
     </ul>
