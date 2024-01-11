@@ -66,17 +66,31 @@ const logout = async () => {
         <li class="nav-item cs-pointer ms-3">
           <img
             class="img-thumbnail rounded-circle"
-            style="width: 2.5rem; height: 2.5rem"
+            style="width: 2.2rem; height: 2.2rem"
             :src="profile"
           />
-          <span class="ms-2 text-primary"> {{ name }}</span>
         </li>
-        <li class="nav-item cs-pointer me-3">
-          <NuxtLink @click="logout" class="nav-link"
-            ><span class="text-light fs-5">Logout</span></NuxtLink
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle text-light fs-6"
+            data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false"
           >
-        </li></template
-      >
+            {{ name }}</a
+          >
+          <ul class="dropdown-menu border-0 my-0 py-1">
+            <li>
+              <NuxtLink @click="logout" class="dropdown-item"
+                ><div class="text-end fs-6 cs-pointer">
+                  <i class="bi bi-door-closed pe-2"></i>Logout
+                </div></NuxtLink
+              >
+            </li>
+          </ul>
+        </li>
+      </template>
     </ul>
   </nav>
 </template>
