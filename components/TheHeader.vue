@@ -28,13 +28,18 @@ const logout = async () => {
           ><span class="text-light fs-5">About</span></NuxtLink
         >
       </li>
-      <li class="nav-item cs-pointer me-3">
+      <li class="nav-item cs-pointer me-4">
         <NuxtLink to="/upload-image" class="nav-link"
           ><span class="text-light fs-5">Live demo</span></NuxtLink
         >
       </li>
+      <li class="nav-item cs-pointer">
+        <NuxtLink to="/upload-image" class="nav-link"
+          ><span class="text-light fs-5">Extract data</span></NuxtLink
+        >
+      </li>
     </ul>
-    <ul class="navbar-nav me-auto">
+    <ul class="navbar-nav me-auto ms-5">
       <li class="nav-item">
         <NuxtLink
           to="https://www.linkedin.com/in/lisette-gonzalez/"

@@ -122,200 +122,192 @@ function triggerUpload() {
 </script>
 
 <template>
-  <section>
-    <div class="container mt-5">
-      <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
-      <div class="card upload-card p-4">
-        <h5 v-if="responseSuccess" class="mt-3 mb-0">
-          EXTRACTED DATA FROM YOUR
-          <span class="text-uppercase">{{ selectedType }}</span>
-        </h5>
-        <div class="row my-4 justify-content-center">
-          <div class="col-md-6" v-if="!isUpload">
-            <ul class="nav nav-tabs justify-content-end">
-              <li class="nav-item cs-pointer" @click="changeTab('device')">
-                <a class="nav-link" :class="{ active: activeTab == 'device' }"
-                  >Upload</a
-                >
-              </li>
-              <li class="nav-item cs-pointer" @click="changeTab('link')">
-                <a class="nav-link" :class="{ active: activeTab == 'link' }"
-                  >From URL</a
-                >
-              </li>
-            </ul>
-            <div class="card-body">
-              <div
-                v-if="activeTab == 'device' && !isUpload"
-                class="uploader"
-                @dragover.prevent
-                @dragenter.prevent
-                @dragstart.prevent
-                @drop.prevent="onChange($event.dataTransfer)"
-                :class="{ noPaddingTop: isUpload }"
-              >
-                <div class="file-input" v-if="!isUpload" @click="triggerUpload">
-                  <div for="file">
-                    <img
-                      src="~/assets/img/upload-img.png"
-                      class="img-fluid upload-image"
-                    />
-                    <input
-                      type="file"
-                      ref="uploadInput"
-                      @change="onChange($event.target)"
-                    />
-                  </div>
-                </div>
-                <div class="row justify-content-center">
-                  <div class="col-md-5">
-                    <p
-                      class="h6 upload-title"
-                      v-if="!isUpload"
-                      @click="triggerUpload"
-                    >
-                      Click to browse, or drag and drop an image here
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <UploadByLink
-              @typedUrl="getUrl"
-              v-if="activeTab == 'link' && !isUpload"
-            />
-          </div>
-          <div class="col-md-5" v-if="isUpload">
-            <ul
-              class="nav nav-tabs justify-content-end mb-4"
-              v-if="!responseSuccess"
+  <div class="row justify-content-center" v-if="!isUpload">
+    <div class="col-md-7">
+      <div class="card upload-card px-5 pt-3 pb-5">
+        <ul class="nav nav-tabs justify-content-end mb-4">
+          <li class="nav-item cs-pointer" @click="changeTab('device')">
+            <a class="nav-link" :class="{ active: activeTab == 'device' }"
+              >Upload</a
             >
-              <li
-                class="nav-item cs-pointer"
-                data-bs-toggle="modal"
-                data-bs-target="#myModal"
-              >
-                <div class="nav-link">
-                  <i class="bi-upload pe-1"></i> Upload
-                  <span
-                    class="spinner-border text-primary spinner-border-sm ms-1"
-                    role="status"
-                    aria-hidden="true"
-                    v-if="isLoading"
-                  ></span>
-                </div>
-              </li>
-              <li class="nav-item cs-pointer" @click="cancelUpload">
-                <div class="nav-link">
-                  <i class="bi-x-circle pe-1 text-danger"></i> Cancel
-                </div>
-              </li>
-            </ul>
-            <div>
+          </li>
+          <li class="nav-item cs-pointer" @click="changeTab('link')">
+            <a class="nav-link" :class="{ active: activeTab == 'link' }"
+              >From URL</a
+            >
+          </li>
+        </ul>
+        <div
+          v-if="activeTab == 'device' && !isUpload"
+          class="uploader"
+          @dragover.prevent
+          @dragenter.prevent
+          @dragstart.prevent
+          @drop.prevent="onChange($event.dataTransfer)"
+          :class="{ noPaddingTop: isUpload }"
+        >
+          <div class="file-input" v-if="!isUpload" @click="triggerUpload">
+            <div for="file">
               <img
-                :src="imgPreview"
-                class="img-fluid py-3 px-2 preview-img w-100"
+                src="~/assets/img/upload-img.png"
+                class="img-fluid upload-image"
+              />
+              <input
+                type="file"
+                ref="uploadInput"
+                @change="onChange($event.target)"
               />
             </div>
           </div>
-          <div class="col extracted-data" v-if="responseSuccess">
-            <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
-              <template v-for="(text, key) in parsedData" :key="key">
-                <div v-if="text.value != null" class="data-container">
-                  <div class="fw-bold key-name">{{ key }}</div>
-                  <li class="list-group-item mb-3">
-                    <div>{{ text.value }}</div>
-                  </li>
-                </div>
-              </template>
-              <div
-                class="data-container"
-                v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <p
+                class="h6 upload-title"
+                v-if="!isUpload"
+                @click="triggerUpload"
               >
-                <div class="fw-bold key-name">Taxes</div>
-                <li
-                  class="list-group-item mb-3"
-                  v-for="(tax, index) in parsedData.taxes"
-                  :key="index"
-                >
-                  <div>{{ tax.rate }}% - {{ tax.value }}</div>
-                </li>
-              </div>
-              <div
-                class="data-container"
-                v-if="
-                  parsedData.reference_numbers &&
-                  parsedData.reference_numbers.length > 0
-                "
-              >
-                <div class="fw-bold key-name">PO #</div>
-                <li
-                  class="list-group-item mb-3"
-                  v-for="(reference, index) in parsedData.reference_numbers"
-                  :key="index"
-                >
-                  <div>{{ reference.value }}</div>
-                </li>
-              </div>
-              <div
-                class="data-container"
-                v-if="extractedData.locale && !extractedData.locale.value"
-              >
-                <div class="fw-bold key-name">Language</div>
-                <li class="list-group-item mb-3">
-                  <div>{{ parsedData.locale.language }}</div>
-                </li>
-              </div>
-              <div class="data-container" v-if="extractedData.locale">
-                <div class="fw-bold key-name">Currency</div>
-                <li class="list-group-item">
-                  <div>{{ extractedData.locale.currency }}</div>
-                </li>
-              </div>
-              <div
-                class="data-container"
-                v-if="
-                  selectedType == 'Passport' &&
-                  parsedData.given_names.length > 0
-                "
-              >
-                <div class="fw-bold key-name">Given names</div>
-                <li
-                  class="list-group-item mb-3"
-                  v-for="(name, index) in parsedData.given_names"
-                  :key="index"
-                >
-                  <div>{{ name.value }}</div>
-                </li>
-              </div>
-            </ul>
-            <ul
-              class="list-group rounded-0"
-              v-if="parsedData.line_items && parsedData.line_items.length > 0"
-            >
-              <div class="fw-bold key-name">Line Items</div>
-              <li
-                class="list-group-item mb-3"
-                v-for="(item, index) in parsedData.line_items"
-                :key="index"
-              >
-                <div>
-                  {{ item.quantity || 1 }}- {{ item.description }}
-                  <span v-if="item.unit_price">x {{ item.unit_price }}.00</span>
-                  -
-                  {{ item.total_amount }}
-                </div>
-              </li>
-            </ul>
-            <div class="text-end mt-5">
-              <button type="button" class="btn btn-primary" @click="goBack">
-                <i class="bi-arrow-left-short"></i> Go back
-              </button>
+                Drag and drop an image here, or click to upload from your device
+              </p>
             </div>
           </div>
         </div>
-        <DocTypeModal @selectedDocType="getDocType" />
+        <UploadByLink
+          @typedUrl="getUrl"
+          v-if="activeTab == 'link' && !isUpload"
+        />
       </div>
     </div>
-  </section>
+  </div>
+  <div class="card upload-card p-4" v-if="isUpload">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <ul
+          class="nav nav-tabs justify-content-end mb-4"
+          v-if="!responseSuccess"
+        >
+          <li
+            class="nav-item cs-pointer"
+            data-bs-toggle="modal"
+            data-bs-target="#myModal"
+          >
+            <div class="nav-link">
+              <i class="bi-upload pe-1"></i> Upload
+              <span
+                class="spinner-border text-primary spinner-border-sm ms-1"
+                role="status"
+                aria-hidden="true"
+                v-if="isLoading"
+              ></span>
+            </div>
+          </li>
+          <li class="nav-item cs-pointer" @click="cancelUpload">
+            <div class="nav-link">
+              <i class="bi-x-circle pe-1 text-danger"></i> Cancel
+            </div>
+          </li>
+        </ul>
+        <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img w-100" />
+      </div>
+      <div class="col-md-6 extracted-data" v-if="responseSuccess">
+        <h5 class="mb-3">
+          EXTRACTED DATA FROM YOUR
+          <span class="text-uppercase">{{ selectedType }}</span>
+        </h5>
+        <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
+          <template v-for="(text, key) in parsedData" :key="key">
+            <div v-if="text.value != null" class="data-container">
+              <div class="fw-bold key-name">{{ key }}</div>
+              <li class="list-group-item mb-3">
+                <div>{{ text.value }}</div>
+              </li>
+            </div>
+          </template>
+          <div
+            class="data-container"
+            v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
+          >
+            <div class="fw-bold key-name">Taxes</div>
+            <li
+              class="list-group-item mb-3"
+              v-for="(tax, index) in parsedData.taxes"
+              :key="index"
+            >
+              <div>{{ tax.rate }}% - {{ tax.value }}</div>
+            </li>
+          </div>
+          <div
+            class="data-container"
+            v-if="
+              parsedData.reference_numbers &&
+              parsedData.reference_numbers.length > 0
+            "
+          >
+            <div class="fw-bold key-name">PO #</div>
+            <li
+              class="list-group-item mb-3"
+              v-for="(reference, index) in parsedData.reference_numbers"
+              :key="index"
+            >
+              <div>{{ reference.value }}</div>
+            </li>
+          </div>
+          <div
+            class="data-container"
+            v-if="extractedData.locale && !extractedData.locale.value"
+          >
+            <div class="fw-bold key-name">Language</div>
+            <li class="list-group-item mb-3">
+              <div>{{ parsedData.locale.language }}</div>
+            </li>
+          </div>
+          <div class="data-container" v-if="extractedData.locale">
+            <div class="fw-bold key-name">Currency</div>
+            <li class="list-group-item">
+              <div>{{ extractedData.locale.currency }}</div>
+            </li>
+          </div>
+          <div
+            class="data-container"
+            v-if="
+              selectedType == 'Passport' && parsedData.given_names.length > 0
+            "
+          >
+            <div class="fw-bold key-name">Given names</div>
+            <li
+              class="list-group-item mb-3"
+              v-for="(name, index) in parsedData.given_names"
+              :key="index"
+            >
+              <div>{{ name.value }}</div>
+            </li>
+          </div>
+        </ul>
+        <ul
+          class="list-group rounded-0"
+          v-if="parsedData.line_items && parsedData.line_items.length > 0"
+        >
+          <div class="fw-bold key-name">Line Items</div>
+          <li
+            class="list-group-item mb-3"
+            v-for="(item, index) in parsedData.line_items"
+            :key="index"
+          >
+            <div>
+              {{ item.quantity || 1 }}- {{ item.description }}
+              <span v-if="item.unit_price">x {{ item.unit_price }}.00</span>
+              -
+              {{ item.total_amount }}
+            </div>
+          </li>
+        </ul>
+        <div class="text-end mt-5">
+          <button type="button" class="btn btn-primary" @click="goBack">
+            <i class="bi-arrow-left-short"></i> Go back
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
+  <DocTypeModal @selectedDocType="getDocType" />
 </template>

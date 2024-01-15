@@ -36,10 +36,10 @@ body {
      text-align: center;
      border: 2.5px dashed #80808038;
      position: relative;
-     border-radius: 15px;
-     background-color: #edf3ff40;
-     margin: 2rem;
+   
+     background-color: #edf3ff40;    
      cursor: pointer;
+     margin-bottom: 1rem;
  }
 
  .upload-image {
@@ -82,8 +82,8 @@ textarea {
 }
 
 .upload-card .nav-tabs .nav-link.active {
-    border-bottom: 2px solid #578fff !important;
-    color: #578fff;
+    border-bottom: 2px solid #7db0e6 !important;
+    color: #7db0e6;
     font-weight: 600;
 }
 
@@ -142,12 +142,13 @@ textarea {
 .link-input .input-group-text {
     background-color: #edf3ff40;
     font-size: 20px;
-    color: #578fff;
+    color: #7db0e6;
 }
 
 .link-input input::placeholder, .upload-title {
     color: #99A3BA;
     opacity: .7;
+    font-size: 15px;
 }
 
 .extracted-data .list-group {
