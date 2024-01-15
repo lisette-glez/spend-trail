@@ -68,7 +68,7 @@ const logout = async () => {
         ><li class="nav-item">
           <div class="vr h-75 ms-2 text-white align-text-top"></div>
         </li>
-        <li class="nav-item cs-pointer ms-3">
+        <li class="nav-item cs-pointer ms-3" v-if="profile">
           <img
             class="img-thumbnail rounded-circle"
             style="width: 2.2rem; height: 2.2rem"
@@ -83,7 +83,11 @@ const logout = async () => {
             role="button"
             aria-expanded="false"
           >
-            {{ name }}</a
+            <i
+              class="bi bi-person-fill-check fs-5 text-primary mx-2"
+              v-if="!profile"
+            ></i
+            >{{ name }}</a
           >
           <ul class="dropdown-menu border-0 my-0 py-1">
             <li>

@@ -1,5 +1,55 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient();
+const fullName = ref("");
+const email = ref("");
+const password = ref("");
+const errorAlert = ref(false);
+const errorMessage = ref<any>(null);
+const signIn = ref(true);
+
+const signUpNewUser = async () => {
+  const { error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value,
+    options: {
+      data: {
+        username: email.value,
+        full_name: fullName.value,
+      },
+    },
+  });
+  if (error) {
+    errorAlert.value = true;
+    errorMessage.value = error.message;
+    setTimeout(() => {
+      errorAlert.value = false;
+    }, 2500);
+  } else {
+    fullName.value = "";
+    email.value = "";
+    password.value = "";
+    alert("Check your email for the login link!");
+    setTimeout(() => {
+      navigateTo("/confirm");
+    }, 2000);
+  }
+};
+
+async function signInWithEmail() {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  });
+  if (error) {
+    errorAlert.value = true;
+    errorMessage.value = error.message;
+    setTimeout(() => {
+      errorAlert.value = false;
+    }, 2500);
+  } else {
+    navigateTo("/");
+  }
+}
 
 const handleGithubLogin = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
@@ -33,29 +83,92 @@ const handleGoogleLogin = async () => {
 </script>
 
 <template>
-  <div class="row justify-content-center pt-5">
-    <div class="col-sm-6 col-md-4">
+  <div class="row justify-content-center pt-4">
+    <div class="col-md-4">
+      <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
       <div class="card shadow-sm card-login">
         <div class="card-body p-5 text-center">
-          <h4 class="card-title mt-2 mb-0">Social Login</h4>
-          <p>Quickly sign in with your social network</p>
+          <div v-if="signIn">
+            <h4 class="card-title mb-2">Sign in</h4>
+            <p>
+              Enter your email and password, or quickly sign in with your social
+              networks.
+            </p>
+          </div>
+          <div v-else>
+            <h4 class="card-title mb-2">Sign up</h4>
+            <p>
+              Enter your name, email and password, or quickly sign in with your
+              social networks.
+            </p>
+          </div>
           <i class="bi bi-person-circle"></i>
+          <div class="mb-3 text-start" v-if="!signIn">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Full Name"
+              v-model="fullName"
+            />
+          </div>
+          <div class="mb-3 text-start">
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Email"
+              v-model="email"
+            />
+          </div>
+          <div class="mb-1 text-start">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              v-model="password"
+            />
+          </div>
           <div class="d-grid gap-2 mt-2">
+            <button
+              class="btn email-btn mt-2 mb-3"
+              type="button"
+              @click="signIn ? signInWithEmail() : signUpNewUser()"
+            >
+              <i class="bi bi-envelope-at me-1"></i>
+              <span v-if="signIn"> Sign in</span>
+              <span v-else> Sign up</span>
+            </button>
+          </div>
+          <p class="mb-0" v-if="signIn">
+            Don't have an account?
+            <span class="text-primary cs-pointer" @click="signIn = !signIn"
+              >Sign Up</span
+            >
+          </p>
+          <p v-else>
+            Already have an account?
+            <span class="text-primary cs-pointer" @click="signIn = !signIn"
+              >Sign in</span
+            >
+          </p>
+          <div class="text-success">
+            <hr />
+          </div>
+          <div class="d-grid gap-2 mt-4">
             <button
               class="btn btn-danger"
               type="button"
               @click="handleGoogleLogin"
             >
               <i class="bi bi-google me-1"></i>
-              Sign in with Google
+              Continue with Google
             </button>
             <button
-              class="btn btn-primary github-btn mt-2 mb-4"
+              class="btn github-btn mt-2 mb-4"
               type="button"
               @click="handleGithubLogin"
             >
               <i class="bi bi-github me-1"></i>
-              Sign in with Github
+              Continue with Github
             </button>
           </div>
         </div>

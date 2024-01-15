@@ -3,16 +3,28 @@ body {
     background-image: linear-gradient(to right, #74ebd5 0%, #9face6 100%);
 }
 
+.email-btn {
+    background-color: #7db0e6;
+    border-color: #7db0e6;  
+    color: #fff;
+}
+
+.email-btn:hover {
+    background-color: #3872af;
+    border-color: #3872af;  
+    color: #fff;
+}
+
 .github-btn {
     background-color: #1A7F37;
-    border-color:#1A7F37;
-    font-weight: 500;
-    font-size: 16px; 
+    border-color:#1A7F37; 
+    color: #fff;
 }
 
 .github-btn:hover {
     background-color: #1a6630;
     border-color: #1a6630;  
+    color: #fff;
 }
 
 .card-login .bi-person-circle {
@@ -21,7 +33,7 @@ body {
 }
 
 .card-login p{
-    font-size: 12px;   
+    font-size: 13px;   
     margin-bottom: 0.5rem;
 }
 
