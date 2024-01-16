@@ -39,67 +39,47 @@ const logout = async () => {
         >
       </li>
     </ul>
-    <ul class="navbar-nav me-auto ms-5">
-      <li class="nav-item">
-        <NuxtLink
-          to="https://www.linkedin.com/in/lisette-gonzalez/"
-          target="_blank"
-          class="nav-link text-light fs-5"
-          ><i class="bi bi-linkedin"></i
-        ></NuxtLink>
-      </li>
-      <li class="nav-item">
-        <NuxtLink
-          to="https://lisette.dev"
-          target="_blank"
-          class="nav-link text-light fs-5"
-          ><i class="bi bi-link-45deg"></i
-        ></NuxtLink>
-      </li>
-      <li class="nav-item">
-        <NuxtLink
-          to="https://github.com/lisette900809/image2text"
-          target="_blank"
-          class="nav-link text-light fs-5"
-          ><i class="bi bi-github"></i
-        ></NuxtLink>
-      </li>
-      <template v-if="user"
-        ><li class="nav-item">
-          <div class="vr h-75 ms-2 text-white align-text-top"></div>
-        </li>
-        <li class="nav-item cs-pointer ms-3" v-if="profile">
-          <img
-            class="img-thumbnail rounded-circle"
-            style="width: 2.2rem; height: 2.2rem"
-            :src="profile"
-          />
-        </li>
+    <ul class="navbar-nav ms-auto">
+      <div v-if="user">
         <li class="nav-item dropdown">
           <a
-            class="nav-link dropdown-toggle text-light fs-6"
+            class="nav-link dropdown-toggle text-light fs-6 pe-0"
             data-bs-toggle="dropdown"
             href="#"
             role="button"
             aria-expanded="false"
           >
+            <img
+              v-if="profile"
+              class="img-thumbnail rounded-circle"
+              style="width: 2rem; height: 2rem"
+              :src="profile"
+            />
             <i
-              class="bi bi-person-fill-check fs-5 text-primary mx-2"
+              class="bi bi-person-circle fs-4 text-primary"
               v-if="!profile"
-            ></i
-            >{{ name }}</a
-          >
-          <ul class="dropdown-menu border-0 my-0 py-1">
+            ></i>
+
+            {{ name }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end border-0 my-0 py-1">
             <li>
-              <NuxtLink @click="logout" class="dropdown-item"
+              <NuxtLink @click="logout" class="dropdown-item pe-1"
                 ><div class="text-end fs-6 cs-pointer">
-                  <i class="bi bi-door-closed pe-2"></i>Logout
-                </div></NuxtLink
-              >
+                  Logout <i class="bi bi-door-closed pe-2"></i></div
+              ></NuxtLink>
             </li>
           </ul>
         </li>
-      </template>
+      </div>
+      <div v-else>
+        <li class="nav-item cs-pointer">
+          <NuxtLink to="/login" class="nav-link icon-link icon-link-hover">
+            <i class="bi bi-box-arrow-in-right text-light fs-5 h-auto"></i>
+            <span class="text-light fs-5 ps-2">Sign in </span>
+          </NuxtLink>
+        </li>
+      </div>
     </ul>
   </nav>
 </template>
