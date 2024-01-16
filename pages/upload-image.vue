@@ -13,6 +13,8 @@ const parsedData = ref({});
 const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
 const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
+const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 
 function onChange(e: any) {
   if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
@@ -119,9 +121,38 @@ function goBack() {
 function triggerUpload() {
   uploadInput.value?.click();
 }
+
+async function saveData() {
+  if (extractedData.value) {
+    const record = {
+      user_id: user.value?.id,
+      doc_type: extractedData.value.document_type.value,
+      purchase_date: new Date(extractedData.value.date.value),
+      category: extractedData.value.category.value,
+      sub_category: extractedData.value.subcategory.value,
+      supplier_name: extractedData.value.supplier_name.value,
+      total_net: extractedData.value.total_net.value,
+      total_amount: extractedData.value.total_amount.value,
+      tip: extractedData.value.tip.value,
+      total_tax: extractedData.value.total_tax.value,
+    };
+
+    const { error } = await supabase.from("user_data").insert(record);
+    if (error) {
+      errorAlert.value = true;
+      errorMessage.value = error.message;
+      setTimeout(() => {
+        errorAlert.value = false;
+      }, 3500);
+    } else {
+      alert("The data was saved successfully!");
+    }
+  }
+}
 </script>
 
 <template>
+  <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
   <div class="row justify-content-center" v-if="!isUpload">
     <div class="col-md-7">
       <div class="card upload-card px-5 pt-3 pb-5">
@@ -180,7 +211,7 @@ function triggerUpload() {
   </div>
   <div class="card upload-card p-4" v-if="isUpload">
     <div class="row justify-content-center">
-      <div class="col-md-6">
+      <div class="col-md-5">
         <ul
           class="nav nav-tabs justify-content-end mb-4"
           v-if="!responseSuccess"
@@ -208,7 +239,7 @@ function triggerUpload() {
         </ul>
         <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img w-100" />
       </div>
-      <div class="col-md-6 extracted-data" v-if="responseSuccess">
+      <div class="col-md-7 extracted-data" v-if="responseSuccess">
         <h5 class="mb-3">
           EXTRACTED DATA FROM YOUR
           <span class="text-uppercase">{{ selectedType }}</span>
@@ -304,10 +335,13 @@ function triggerUpload() {
           <button type="button" class="btn btn-primary" @click="goBack">
             <i class="bi-arrow-left-short"></i> Go back
           </button>
+          <button class="btn github-btn ms-3" type="button" @click="saveData">
+            <i class="bi bi-save"></i>
+            Save data
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
   <DocTypeModal @selectedDocType="getDocType" />
 </template>
