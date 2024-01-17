@@ -2,6 +2,7 @@
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const receiptData = ref(<any>null);
+const receiptUrl = ref(<any>null);
 
 onMounted(() => {
   fetchReceiptData();
@@ -25,11 +26,22 @@ async function fetchReceiptData() {
     console.log(error);
   } else {
     receiptData.value = data;
+    getReceiptImage(data[0].id);
+  }
+
+  async function getReceiptImage(id: string) {
+    console.log(id);
+    const url = supabase.storage.from("receipts").getPublicUrl(id);
+    console.log(url);
+    receiptUrl.value = url.data.publicUrl;
   }
 }
 </script>
 
 <template>
+  <div>
+    <img :src="receiptUrl" />
+  </div>
   <div class="row justify-content-start pt-4">
     <div class="col-md-3" v-for="item in receiptData" :key="item.id">
       <div class="card shadow-sm mb-4">
