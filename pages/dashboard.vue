@@ -10,7 +10,7 @@ onMounted(() => {
 async function fetchReceiptData() {
   const docType = "EXPENSE RECEIPT";
   let query = supabase
-    .from("user_data")
+    .from("documents")
     .select("id, category, purchase_date, supplier_name, total_amount");
 
   if (user.value) {

@@ -122,6 +122,18 @@ function triggerUpload() {
   uploadInput.value?.click();
 }
 
+async function saveImgStorage(file: any, id: string) {
+  const { data, error } = await supabase.storage
+    .from("receipts")
+    .upload(id, file);
+  if (error) {
+    errorAlert.value = true;
+    errorMessage.value = error.message;
+  } else {
+    alert("The img was saved successfully!");
+  }
+}
+
 async function saveData() {
   if (extractedData.value) {
     const record = {
@@ -139,7 +151,11 @@ async function saveData() {
       total_tax: extractedData.value.total_tax.value,
     };
 
-    const { error } = await supabase.from("user_data").insert(record);
+    const { data, error } = await supabase
+      .from("documents")
+      .insert(record)
+      .select("id");
+
     if (error) {
       errorAlert.value = true;
       errorMessage.value = error.message;
@@ -147,6 +163,7 @@ async function saveData() {
         errorAlert.value = false;
       }, 3500);
     } else {
+      saveImgStorage(imgFile.value, data[0].id);
       alert("The data was saved successfully!");
     }
   }

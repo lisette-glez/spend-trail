@@ -61,7 +61,7 @@ const logout = async () => {
               :src="profile"
             />
             <i
-              class="bi bi-person-circle fs-4 text-primary"
+              class="bi bi-person-circle fs-4 text-primary align-middle"
               v-if="!profile"
             ></i>
 
