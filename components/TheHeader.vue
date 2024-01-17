@@ -29,6 +29,11 @@ const logout = async () => {
         >
       </li>
       <li class="nav-item cs-pointer me-4">
+        <NuxtLink to="/dashboard" class="nav-link"
+          ><span class="text-light fs-5">Dashboard</span></NuxtLink
+        >
+      </li>
+      <li class="nav-item cs-pointer me-4">
         <NuxtLink to="/upload-image" class="nav-link"
           ><span class="text-light fs-5">Live demo</span></NuxtLink
         >

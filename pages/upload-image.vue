@@ -127,7 +127,9 @@ async function saveData() {
     const record = {
       user_id: user.value?.id,
       doc_type: extractedData.value.document_type.value,
-      purchase_date: new Date(extractedData.value.date.value),
+      purchase_date: extractedData.value.date.value
+        ? new Date(extractedData.value.date.value)
+        : null,
       category: extractedData.value.category.value,
       sub_category: extractedData.value.subcategory.value,
       supplier_name: extractedData.value.supplier_name.value,
@@ -211,7 +213,7 @@ async function saveData() {
   </div>
   <div class="card upload-card p-4" v-if="isUpload">
     <div class="row justify-content-center">
-      <div class="col-md-5">
+      <div class="col-md-4">
         <ul
           class="nav nav-tabs justify-content-end mb-4"
           v-if="!responseSuccess"
@@ -239,7 +241,7 @@ async function saveData() {
         </ul>
         <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img w-100" />
       </div>
-      <div class="col-md-7 extracted-data" v-if="responseSuccess">
+      <div class="col-md-8 extracted-data" v-if="responseSuccess">
         <h5 class="mb-3">
           EXTRACTED DATA FROM YOUR
           <span class="text-uppercase">{{ selectedType }}</span>

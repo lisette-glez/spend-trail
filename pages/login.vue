@@ -86,17 +86,17 @@ const handleGoogleLogin = async () => {
   <div class="row justify-content-center pt-4">
     <div class="col-md-4">
       <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
-      <div class="card shadow-sm card-login">
-        <div class="card-body p-5 text-center">
+      <div class="card card-login shadow-sm">
+        <div class="p-5 text-center">
           <div v-if="signIn">
-            <h4 class="card-title mb-2">Sign in</h4>
+            <h4 class="mb-2">Sign in</h4>
             <p>
               Enter your email and password, or quickly sign in with your social
               networks.
             </p>
           </div>
           <div v-else>
-            <h4 class="card-title mb-2">Sign up</h4>
+            <h4 class="mb-2">Sign up</h4>
             <p>
               Enter your name, email and password, or quickly sign in with your
               social networks.
