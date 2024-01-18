@@ -26,22 +26,16 @@ async function fetchReceiptData() {
     console.log(error);
   } else {
     receiptData.value = data;
-    getReceiptImage(data[0].id);
   }
+}
 
-  async function getReceiptImage(id: string) {
-    console.log(id);
-    const url = supabase.storage.from("receipts").getPublicUrl(id);
-    console.log(url);
-    receiptUrl.value = url.data.publicUrl;
-  }
+function getReceiptImage(id: string) {
+  const url = supabase.storage.from("receipts").getPublicUrl(id);
+  receiptUrl.value = url.data.publicUrl;
 }
 </script>
 
 <template>
-  <div>
-    <img :src="receiptUrl" />
-  </div>
   <div class="row justify-content-start pt-4">
     <div class="col-md-3" v-for="item in receiptData" :key="item.id">
       <div class="card shadow-sm mb-4">
@@ -59,7 +53,12 @@ async function fetchReceiptData() {
               </span>
             </div>
             <div class="col-md-2 text-end align-self-center">
-              <i class="bi bi-camera fs-4 cs-pointer"></i>
+              <i
+                class="bi bi-camera fs-4 cs-pointer"
+                data-bs-toggle="modal"
+                data-bs-target="#imgModal"
+                @click="getReceiptImage(item.id)"
+              ></i>
             </div>
           </div>
         </div>
@@ -69,6 +68,23 @@ async function fetchReceiptData() {
             <div class="col text-end">
               <i class="bi bi-cash align-middle"> </i> ${{ item.total_amount }}
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="imgModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body px-4 pt-1">
+            <img :src="receiptUrl" class="img-fluid" />
           </div>
         </div>
       </div>
