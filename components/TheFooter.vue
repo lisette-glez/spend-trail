@@ -4,8 +4,8 @@
       <div class="row my-2 justify-content-center">
         <div class="col-md-6 text-end pt-2">
           <span
-            >Copyright &copy; {{ new Date().getFullYear() }} Image2Text by
-            Lisette Gonzalez
+            >Copyright &copy; {{ new Date().getFullYear() }} Img2Text by Lisette
+            Gonzalez
           </span>
         </div>
         <div class="col-md-4">

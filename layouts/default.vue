@@ -1,7 +1,7 @@
 <template>
   <div>
     <TheHeader />
-    <main class="container mt-4">
+    <main class="container mt-5">
       <slot />
     </main>
     <TheFooter />

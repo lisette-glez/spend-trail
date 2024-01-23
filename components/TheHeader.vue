@@ -18,29 +18,29 @@ const logout = async () => {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand container-xxl">
+  <nav class="navbar navbar-expand shadow-sm px-5 py-0">
     <NuxtLink to="/" class="nav-link">
       <img src="~/assets/img/logo.png" class="w-75"
     /></NuxtLink>
     <ul class="navbar-nav me-auto">
-      <li class="nav-item cs-pointer me-4">
-        <NuxtLink to="/" class="nav-link"
-          ><span class="text-light fs-5">About</span></NuxtLink
-        >
-      </li>
-      <li class="nav-item cs-pointer me-4">
+      <li class="nav-item cs-pointer mx-4">
         <NuxtLink to="/dashboard" class="nav-link"
           ><span class="text-light fs-5">Dashboard</span></NuxtLink
         >
       </li>
       <li class="nav-item cs-pointer me-4">
-        <NuxtLink to="/upload-image" class="nav-link"
+        <NuxtLink to="/live-demo" class="nav-link"
           ><span class="text-light fs-5">Live demo</span></NuxtLink
         >
       </li>
-      <li class="nav-item cs-pointer">
-        <NuxtLink to="/upload-image" class="nav-link"
+      <li class="nav-item cs-pointer me-4">
+        <NuxtLink to="/extract-data" class="nav-link"
           ><span class="text-light fs-5">Extract data</span></NuxtLink
+        >
+      </li>
+      <li class="nav-item cs-pointer">
+        <NuxtLink to="/" class="nav-link"
+          ><span class="text-light fs-5">About</span></NuxtLink
         >
       </li>
     </ul>
