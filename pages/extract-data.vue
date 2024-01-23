@@ -8,8 +8,7 @@ const responseSuccess = ref(false);
 const activeTab = ref("device");
 const errorAlert = ref(false);
 const errorMessage = ref("");
-const extractedData = ref(null);
-const parsedData = ref({});
+const extractedData = ref({});
 const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
 const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
@@ -39,7 +38,7 @@ async function uploadImage() {
   const formData = new FormData();
   formData.append("document", imgFile.value);
 
-  const { data } = await useFetch<any>(docApiUrl, {
+  const { data, error } = await useFetch<any>(docApiUrl, {
     method: "post",
     headers: { Authorization: "Token " + runtimeConfig.public.apiKey },
     body: formData,
@@ -47,27 +46,11 @@ async function uploadImage() {
 
   if (data.value.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
-
-    switch (selectedType.value) {
-      case "Invoice":
-        parsedData.value = renameKeys(invoiceUpdatedKeys, extractedData.value);
-        break;
-
-      case "Expense Receipt":
-        parsedData.value = renameKeys(receiptUpdatedKeys, extractedData.value);
-        break;
-
-      case "Driver License":
-        parsedData.value = renameKeys(driverUpdatedKeys, extractedData.value);
-        break;
-
-      case "Passport":
-        parsedData.value = renameKeys(passportUpdatedKeys, extractedData.value);
-        break;
-    }
-
+    extractedData.value = renameKeys(extractedData.value);
     isLoading.value = false;
     responseSuccess.value = true;
+  } else {
+    console.log(error.value);
   }
 }
 
@@ -113,8 +96,7 @@ function goBack() {
   responseSuccess.value = false;
   imgFile.value = "";
   imgPreview.value = "";
-  parsedData.value = {};
-  extractedData.value = null;
+  extractedData.value = {};
   selectedType.value = "";
 }
 
@@ -123,9 +105,7 @@ function triggerUpload() {
 }
 
 async function saveImgStorage(file: any, id: string) {
-  const { data, error } = await supabase.storage
-    .from("receipts")
-    .upload(id, file);
+  const { error } = await supabase.storage.from("receipts").upload(id, file);
   if (error) {
     errorAlert.value = true;
     errorMessage.value = error.message;
@@ -174,7 +154,7 @@ async function saveData() {
   <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
   <div class="row justify-content-center" v-if="!isUpload">
     <div class="col-md-7">
-      <div class="card upload-card px-5 pt-3 pb-5">
+      <div class="card upload-card px-5 pt-3 pb-5 shadow-sm border-0">
         <ul class="nav nav-tabs justify-content-end mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('device')">
             <a class="nav-link" :class="{ active: activeTab == 'device' }"
@@ -264,9 +244,9 @@ async function saveData() {
           <span class="text-uppercase">{{ selectedType }}</span>
         </h5>
         <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
-          <template v-for="(text, key) in parsedData" :key="key">
+          <template v-for="(text, key) in extractedData" :key="key">
             <div v-if="text.value != null" class="data-container">
-              <div class="fw-bold key-name">{{ key }}</div>
+              <div class="fw-bold key-name text-uppercase">{{ key }}</div>
               <li class="list-group-item mb-3">
                 <div>{{ text.value }}</div>
               </li>
@@ -274,12 +254,12 @@ async function saveData() {
           </template>
           <div
             class="data-container"
-            v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
+            v-if="selectedType == 'Invoice' && extractedData.taxes.length > 0"
           >
             <div class="fw-bold key-name">Taxes</div>
             <li
               class="list-group-item mb-3"
-              v-for="(tax, index) in parsedData.taxes"
+              v-for="(tax, index) in extractedData.taxes"
               :key="index"
             >
               <div>{{ tax.rate }}% - {{ tax.value }}</div>
@@ -288,30 +268,21 @@ async function saveData() {
           <div
             class="data-container"
             v-if="
-              parsedData.reference_numbers &&
-              parsedData.reference_numbers.length > 0
+              extractedData.reference_numbers &&
+              extractedData.reference_numbers.length > 0
             "
           >
             <div class="fw-bold key-name">PO #</div>
             <li
               class="list-group-item mb-3"
-              v-for="(reference, index) in parsedData.reference_numbers"
+              v-for="(reference, index) in extractedData.reference_numbers"
               :key="index"
             >
               <div>{{ reference.value }}</div>
             </li>
           </div>
-          <div
-            class="data-container"
-            v-if="extractedData.locale && !extractedData.locale.value"
-          >
-            <div class="fw-bold key-name">Language</div>
-            <li class="list-group-item mb-3">
-              <div>{{ parsedData.locale.language }}</div>
-            </li>
-          </div>
           <div class="data-container" v-if="extractedData.locale">
-            <div class="fw-bold key-name">Currency</div>
+            <div class="fw-bold key-name text-uppercase">Currency</div>
             <li class="list-group-item">
               <div>{{ extractedData.locale.currency }}</div>
             </li>
@@ -319,13 +290,13 @@ async function saveData() {
           <div
             class="data-container"
             v-if="
-              selectedType == 'Passport' && parsedData.given_names.length > 0
+              selectedType == 'Passport' && extractedData.given_names.length > 0
             "
           >
             <div class="fw-bold key-name">Given names</div>
             <li
               class="list-group-item mb-3"
-              v-for="(name, index) in parsedData.given_names"
+              v-for="(name, index) in extractedData.given_names"
               :key="index"
             >
               <div>{{ name.value }}</div>
@@ -334,12 +305,12 @@ async function saveData() {
         </ul>
         <ul
           class="list-group rounded-0"
-          v-if="parsedData.line_items && parsedData.line_items.length > 0"
+          v-if="extractedData.line_items && extractedData.line_items.length > 0"
         >
           <div class="fw-bold key-name">Line Items</div>
           <li
             class="list-group-item mb-3"
-            v-for="(item, index) in parsedData.line_items"
+            v-for="(item, index) in extractedData.line_items"
             :key="index"
           >
             <div>
