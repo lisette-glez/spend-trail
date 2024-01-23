@@ -1,17 +1,20 @@
 <script setup lang="ts">
 const runtimeConfig = useRuntimeConfig();
 const docApiUrl = ref(runtimeConfig.public.apiBaseReceipt);
-const imgUrl =
-  "https://wkqtbrfzamxmkwdwqnbi.supabase.co/storage/v1/object/public/receipts/b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c";
+const imgUrl = ref(runtimeConfig.public.img1Url);
 const extractedData = ref({});
+const error = ref({});
+const previewImg = ref("/_nuxt/assets/img/receipts/publixdemo.png");
+const loading = ref(false);
 
 onMounted(() => {
   processImage();
 });
 
 async function processImage() {
+  loading.value = true;
   const formData = new FormData();
-  formData.append("document", imgUrl);
+  formData.append("document", imgUrl.value);
 
   const { data, error } = await useFetch<any>(docApiUrl, {
     method: "post",
@@ -20,11 +23,23 @@ async function processImage() {
   });
 
   if (data.value) {
-    extractedData.value = data.value.document.inference.prediction;
-    extractedData.value = renameKeys(extractedData.value);
+    extractedData.value = renameKeys(data.value.document.inference.prediction);
+    loading.value = false;
   } else {
-    alert(error.value);
+    alert(error);
   }
+}
+
+function changeImage(img: string) {
+  extractedData.value = {};
+  if (img == "img1") {
+    previewImg.value = "/_nuxt/assets/img/receipts/publixdemo.png";
+    imgUrl.value = runtimeConfig.public.img1Url;
+  } else {
+    previewImg.value = "/_nuxt/assets/img/receipts/outback.jpg";
+    imgUrl.value = runtimeConfig.public.img2Url;
+  }
+  processImage();
 }
 </script>
 
@@ -33,20 +48,39 @@ async function processImage() {
     <div class="row justify-content-center">
       <div class="col-md-4">
         <div class="d-inline-block overflow-hidden bg-light">
-          <img src="~/assets/img/publixdemo.png" class="demo-img img-fluid" />
+          <img :src="previewImg" class="demo-img img-fluid" />
         </div>
         <div class="row">
           <div class="mt-3 col-md-3">
             <img
-              src="~/assets/img/publixdemo.png"
+              src="~/assets/img/receipts/publixdemo.png"
               class="img-thumbnail cs-pointer"
+              @click="changeImage('img1')"
+            />
+          </div>
+          <div class="mt-3 col-md-3">
+            <img
+              src="~/assets/img/receipts/outback.jpg"
+              class="img-thumbnail cs-pointer"
+              @click="changeImage('img2')"
             />
           </div>
         </div>
       </div>
       <div class="col-md-8 extracted-data">
-        <h5 class="mb-3">EXTRACTED DATA FROM YOUR RECEIPT</h5>
-        <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
+        <h5 class="mb-3">
+          EXTRACTED DATA FROM YOUR RECEIPT
+          <span
+            class="spinner-border text-primary spinner-border-sm ms-1"
+            role="status"
+            aria-hidden="true"
+            v-if="loading"
+          ></span>
+        </h5>
+        <ul
+          class="list-group rounded-0 d-flex flex-row flex-wrap"
+          v-if="!loading"
+        >
           <template v-for="(text, key) in extractedData" :key="key">
             <div v-if="text.value != null" class="data-container">
               <div class="fw-bold key-name text-uppercase">{{ key }}</div>
@@ -56,7 +90,7 @@ async function processImage() {
             </div>
           </template>
           <div class="data-container" v-if="extractedData.locale">
-            <div class="fw-bold key-name text-uppercase">Currency</div>
+            <div class="fw-bold key-name">CURRENCY</div>
             <li class="list-group-item">
               <div>{{ extractedData.locale.currency }}</div>
             </li>
@@ -78,12 +112,15 @@ async function processImage() {
             </li>
           </div>
         </ul>
-
         <ul
           class="list-group rounded-0"
-          v-if="extractedData.line_items && extractedData.line_items.length > 0"
+          v-if="
+            extractedData.line_items &&
+            extractedData.line_items.length > 0 &&
+            !loading
+          "
         >
-          <div class="fw-bold key-name">Line Items</div>
+          <div class="fw-bold key-name">LINE ITEMS</div>
           <li
             class="list-group-item mb-3"
             v-for="(item, index) in extractedData.line_items"

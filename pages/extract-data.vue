@@ -14,6 +14,7 @@ const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
+const parsedData = ref({});
 
 function onChange(e: any) {
   if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
@@ -46,7 +47,7 @@ async function uploadImage() {
 
   if (data.value.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
-    extractedData.value = renameKeys(extractedData.value);
+    parsedData.value = renameKeys(extractedData.value);
     isLoading.value = false;
     responseSuccess.value = true;
   } else {
@@ -97,6 +98,7 @@ function goBack() {
   imgFile.value = "";
   imgPreview.value = "";
   extractedData.value = {};
+  parsedData.value = {};
   selectedType.value = "";
 }
 
@@ -244,7 +246,7 @@ async function saveData() {
           <span class="text-uppercase">{{ selectedType }}</span>
         </h5>
         <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
-          <template v-for="(text, key) in extractedData" :key="key">
+          <template v-for="(text, key) in parsedData" :key="key">
             <div v-if="text.value != null" class="data-container">
               <div class="fw-bold key-name text-uppercase">{{ key }}</div>
               <li class="list-group-item mb-3">
@@ -254,12 +256,12 @@ async function saveData() {
           </template>
           <div
             class="data-container"
-            v-if="selectedType == 'Invoice' && extractedData.taxes.length > 0"
+            v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
           >
             <div class="fw-bold key-name">Taxes</div>
             <li
               class="list-group-item mb-3"
-              v-for="(tax, index) in extractedData.taxes"
+              v-for="(tax, index) in parsedData.taxes"
               :key="index"
             >
               <div>{{ tax.rate }}% - {{ tax.value }}</div>
@@ -268,35 +270,35 @@ async function saveData() {
           <div
             class="data-container"
             v-if="
-              extractedData.reference_numbers &&
-              extractedData.reference_numbers.length > 0
+              parsedData.reference_numbers &&
+              parsedData.reference_numbers.length > 0
             "
           >
             <div class="fw-bold key-name">PO #</div>
             <li
               class="list-group-item mb-3"
-              v-for="(reference, index) in extractedData.reference_numbers"
+              v-for="(reference, index) in parsedData.reference_numbers"
               :key="index"
             >
               <div>{{ reference.value }}</div>
             </li>
           </div>
-          <div class="data-container" v-if="extractedData.locale">
-            <div class="fw-bold key-name text-uppercase">Currency</div>
+          <div class="data-container" v-if="parsedData.locale">
+            <div class="fw-bold key-name">CURRENCY</div>
             <li class="list-group-item">
-              <div>{{ extractedData.locale.currency }}</div>
+              <div>{{ parsedData.locale.currency }}</div>
             </li>
           </div>
           <div
             class="data-container"
             v-if="
-              selectedType == 'Passport' && extractedData.given_names.length > 0
+              selectedType == 'Passport' && parsedData.given_names.length > 0
             "
           >
-            <div class="fw-bold key-name">Given names</div>
+            <div class="fw-bold key-name">GIVEN NAMES</div>
             <li
               class="list-group-item mb-3"
-              v-for="(name, index) in extractedData.given_names"
+              v-for="(name, index) in parsedData.given_names"
               :key="index"
             >
               <div>{{ name.value }}</div>
@@ -305,12 +307,12 @@ async function saveData() {
         </ul>
         <ul
           class="list-group rounded-0"
-          v-if="extractedData.line_items && extractedData.line_items.length > 0"
+          v-if="parsedData.line_items && parsedData.line_items.length > 0"
         >
-          <div class="fw-bold key-name">Line Items</div>
+          <div class="fw-bold key-name">LINE ITEMS</div>
           <li
             class="list-group-item mb-3"
-            v-for="(item, index) in extractedData.line_items"
+            v-for="(item, index) in parsedData.line_items"
             :key="index"
           >
             <div>

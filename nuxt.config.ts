@@ -13,6 +13,8 @@ export default defineNuxtConfig({
       apiBaseDriver: process.env.API_MINDEE_DRIVER_URL,
       apiBasePassport: process.env.API_MINDEE_PASSPORT_URL,
       apiKey: process.env.API_MINDEE_KEY,
+      img1Url: process.env.SUPABASE_RECEIPT_IMAGE1_URL,
+      img2Url: process.env.SUPABASE_RECEIPT_IMAGE2_URL,
     },
   },
 });
