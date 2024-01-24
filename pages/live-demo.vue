@@ -3,7 +3,6 @@ const runtimeConfig = useRuntimeConfig();
 const docApiUrl = ref(runtimeConfig.public.apiBaseReceipt);
 const imgUrl = ref(runtimeConfig.public.img1Url);
 const extractedData = ref({});
-const error = ref({});
 const previewImg = ref("/_nuxt/assets/img/receipts/publixdemo.png");
 const loading = ref(false);
 
@@ -22,11 +21,11 @@ async function processImage() {
     body: formData,
   });
 
-  if (data.value) {
+  if (data.value?.api_request.status_code == 201) {
     extractedData.value = renameKeys(data.value.document.inference.prediction);
     loading.value = false;
   } else {
-    alert(error);
+    alert(error.value?.data.api_request.error.message);
   }
 }
 

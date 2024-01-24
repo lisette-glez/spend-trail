@@ -45,20 +45,15 @@ async function uploadImage() {
     body: formData,
   });
 
-  if (data.value.api_request.status_code == 201) {
+  if (data.value?.api_request.status_code == 201) {
     extractedData.value = data.value.document.inference.prediction;
     parsedData.value = renameKeys(extractedData.value);
     isLoading.value = false;
     responseSuccess.value = true;
   } else {
-    console.log(error.value);
+    alert(error.value?.data.api_request.error.message);
+    goBack();
   }
-}
-
-function cancelUpload() {
-  imgFile.value = "";
-  imgPreview.value = "";
-  isUpload.value = false;
 }
 
 function getUrl(url: string) {
@@ -100,20 +95,11 @@ function goBack() {
   extractedData.value = {};
   parsedData.value = {};
   selectedType.value = "";
+  isLoading.value = false;
 }
 
 function triggerUpload() {
   uploadInput.value?.click();
-}
-
-async function saveImgStorage(file: any, id: string) {
-  const { error } = await supabase.storage.from("receipts").upload(id, file);
-  if (error) {
-    errorAlert.value = true;
-    errorMessage.value = error.message;
-  } else {
-    alert("The img was saved successfully!");
-  }
 }
 
 async function saveData() {
@@ -148,6 +134,16 @@ async function saveData() {
       saveImgStorage(imgFile.value, data[0].id);
       alert("The data was saved successfully!");
     }
+  }
+}
+
+async function saveImgStorage(file: any, id: string) {
+  const { error } = await supabase.storage.from("receipts").upload(id, file);
+  if (error) {
+    errorAlert.value = true;
+    errorMessage.value = error.message;
+  } else {
+    alert("The img was saved successfully!");
   }
 }
 </script>
@@ -232,7 +228,7 @@ async function saveData() {
               ></span>
             </div>
           </li>
-          <li class="nav-item cs-pointer" @click="cancelUpload">
+          <li class="nav-item cs-pointer" @click="goBack">
             <div class="nav-link">
               <i class="bi-x-circle pe-1 text-danger"></i> Cancel
             </div>
