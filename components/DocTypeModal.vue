@@ -18,7 +18,7 @@ function changeDocType(type: string) {
     aria-labelledby="modalTitleId"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header border-0 pb-0">
           <button
@@ -28,19 +28,10 @@ function changeDocType(type: string) {
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
-          <div class="row mb-4 text-center">
-            <h5 class="mb-4">Select document type you want process</h5>
-            <div class="col-md-3">
-              <div
-                class="card doc-type-card p-2"
-                :class="{ typeActive: docType == 'Invoice' }"
-                @click="changeDocType('Invoice')"
-              >
-                <i class="bi-file-earmark-text pe-1"></i> <span>Invoice</span>
-              </div>
-            </div>
-            <div class="col-md-3">
+        <div class="modal-body text-center">
+          <h5 class="mb-4">Select a document type</h5>
+          <div class="row mb-3 justify-content-center px-4">
+            <div class="col-md-4">
               <div
                 class="card doc-type-card p-2"
                 :class="{ typeActive: docType == 'Expense Receipt' }"
@@ -49,16 +40,16 @@ function changeDocType(type: string) {
                 <i class="bi-receipt pe-1"></i> <span>Receipt</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
               <div
                 class="card doc-type-card p-2"
-                :class="{ typeActive: docType == 'Driver License' }"
-                @click="changeDocType('Driver License')"
+                :class="{ typeActive: docType == 'Invoice' }"
+                @click="changeDocType('Invoice')"
               >
-                <i class="bi-car-front pe-1"></i> <span>Driver Licence</span>
+                <i class="bi-file-earmark-text pe-1"></i> <span>Invoice</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
               <div
                 class="card doc-type-card p-2"
                 :class="{ typeActive: docType == 'Passport' }"

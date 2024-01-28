@@ -3,8 +3,9 @@ const runtimeConfig = useRuntimeConfig();
 const docApiUrl = ref(runtimeConfig.public.apiBaseReceipt);
 const imgUrl = ref(runtimeConfig.public.img1Url);
 const extractedData = ref({});
-const previewImg = ref("/_nuxt/assets/img/receipts/publixdemo.png");
+const previewImg = ref("/_nuxt/assets/img/demo/receipt.png");
 const loading = ref(false);
+const activeImg = ref("Receipt");
 
 onMounted(() => {
   processImage();
@@ -30,47 +31,66 @@ async function processImage() {
 }
 
 function changeImage(img: string) {
+  activeImg.value = img;
   extractedData.value = {};
-  if (img == "img1") {
-    previewImg.value = "/_nuxt/assets/img/receipts/publixdemo.png";
-    imgUrl.value = runtimeConfig.public.img1Url;
-  } else {
-    previewImg.value = "/_nuxt/assets/img/receipts/outback.jpg";
-    imgUrl.value = runtimeConfig.public.img2Url;
+  switch (activeImg.value) {
+    case "Receipt":
+      previewImg.value = "/_nuxt/assets/img/demo/receipt.png";
+      imgUrl.value = runtimeConfig.public.img1Url;
+      docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
+      break;
+    case "Invoice":
+      previewImg.value = "/_nuxt/assets/img/demo/invoice.png";
+      imgUrl.value = runtimeConfig.public.img2Url;
+      docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
+      break;
+    case "Passport":
+      previewImg.value = "/_nuxt/assets/img/demo/passport.jpg";
+      imgUrl.value = runtimeConfig.public.img4Url;
+      docApiUrl.value = runtimeConfig.public.apiBasePassport;
+      break;
   }
   processImage();
 }
 </script>
 
 <template>
-  <div class="card upload-card px-5 py-5 shadow-sm border-0">
+  <div class="card custom-card px-5 py-5 shadow-sm border-0">
     <div class="row justify-content-center">
       <div class="col-md-4">
         <div class="d-inline-block overflow-hidden bg-light">
-          <img :src="previewImg" class="demo-img img-fluid" />
+          <img :src="previewImg" class="demo-img img-fluid border" />
         </div>
         <div class="row">
-          <div class="mt-3 col-md-3">
+          <div class="mt-3 col-md-4">
             <img
-              src="~/assets/img/receipts/publixdemo.png"
+              src="~/assets/img/demo/receipt.png"
               class="img-thumbnail cs-pointer"
-              @click="changeImage('img1')"
+              @click="changeImage('Receipt')"
             />
           </div>
-          <div class="mt-3 col-md-3">
+          <div class="mt-3 col-md-4">
             <img
-              src="~/assets/img/receipts/outback.jpg"
+              src="~/assets/img/demo/invoice.png"
               class="img-thumbnail cs-pointer"
-              @click="changeImage('img2')"
+              @click="changeImage('Invoice')"
+            />
+          </div>
+          <div class="mt-3 col-md-4">
+            <img
+              src="~/assets/img/demo/passport.jpg"
+              class="img-thumbnail cs-pointer"
+              @click="changeImage('Passport')"
             />
           </div>
         </div>
       </div>
-      <div class="col-md-8 extracted-data">
+      <div class="col-md-8 extracted-data ps-md-5">
         <h5 class="mb-3">
-          EXTRACTED DATA FROM YOUR RECEIPT
+          EXTRACTED DATA FROM YOUR
+          <span class="text-uppercase">{{ activeImg }}</span>
           <span
-            class="spinner-border text-primary spinner-border-sm ms-1"
+            class="spinner-border text-primary spinner-border-sm ms-2"
             role="status"
             aria-hidden="true"
             v-if="loading"

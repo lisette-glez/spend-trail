@@ -67,15 +67,9 @@ function getDocType(type: string) {
     case "Invoice":
       docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
       break;
-
     case "Expense Receipt":
       docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
       break;
-
-    case "Driver License":
-      docApiUrl.value = runtimeConfig.public.apiBaseDriver;
-      break;
-
     case "Passport":
       docApiUrl.value = runtimeConfig.public.apiBasePassport;
       break;
@@ -110,13 +104,34 @@ async function saveData() {
       purchase_date: extractedData.value.date.value
         ? new Date(extractedData.value.date.value)
         : null,
-      category: extractedData.value.category.value,
-      sub_category: extractedData.value.subcategory.value,
+      category: extractedData.value.category
+        ? extractedData.value.category.value
+        : null,
+      sub_category: extractedData.value.subcategory
+        ? extractedData.value.subcategory.value
+        : null,
       supplier_name: extractedData.value.supplier_name.value,
       total_net: extractedData.value.total_net.value,
       total_amount: extractedData.value.total_amount.value,
-      tip: extractedData.value.tip.value,
-      total_tax: extractedData.value.total_tax.value,
+      tip: extractedData.value.tip ? extractedData.value.tip.value : null,
+      total_tax: extractedData.value.total_tax
+        ? extractedData.value.total_tax.value
+        : null,
+      customer_address: extractedData.value.customer_address
+        ? extractedData.value.customer_address.value
+        : null,
+      customer_name: extractedData.value.customer_name
+        ? extractedData.value.customer_name.value
+        : null,
+      due_date: extractedData.value.due_date.value
+        ? new Date(extractedData.value.due_date.value)
+        : null,
+      invoice_number: extractedData.value.invoice_number
+        ? extractedData.value.invoice_number.value
+        : null,
+      supplier_address: extractedData.value.supplier_address
+        ? extractedData.value.supplier_address.value
+        : null,
     };
 
     const { data, error } = await supabase
@@ -152,8 +167,8 @@ async function saveImgStorage(file: any, id: string) {
   <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
   <div class="row justify-content-center" v-if="!isUpload">
     <div class="col-md-7">
-      <div class="card upload-card px-5 pt-3 pb-5 shadow-sm border-0">
-        <ul class="nav nav-tabs justify-content-end mb-4">
+      <div class="card custom-card px-5 pt-3 pb-5 shadow-sm border-0">
+        <ul class="nav nav-tabs mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('device')">
             <a class="nav-link" :class="{ active: activeTab == 'device' }"
               >Upload</a
@@ -206,7 +221,7 @@ async function saveImgStorage(file: any, id: string) {
       </div>
     </div>
   </div>
-  <div class="card upload-card p-4" v-if="isUpload">
+  <div class="card custom-card p-4" v-if="isUpload">
     <div class="row justify-content-center">
       <div class="col-md-4">
         <ul
@@ -323,7 +338,14 @@ async function saveImgStorage(file: any, id: string) {
           <button type="button" class="btn btn-primary" @click="goBack">
             <i class="bi-arrow-left-short"></i> Go back
           </button>
-          <button class="btn github-btn ms-3" type="button" @click="saveData">
+          <button
+            class="btn github-btn ms-3"
+            type="button"
+            @click="saveData"
+            v-if="
+              selectedType == 'Invoice' || selectedType == 'Expense Receipt'
+            "
+          >
             <i class="bi bi-save"></i>
             Save data
           </button>

@@ -79,7 +79,7 @@ textarea {
     height: 300px !important;
 }
 
-.upload-card .nav-tabs .nav-link{
+.custom-card .nav-tabs .nav-link{
     border:0 !important;
     color: #99A3BA;
     font-weight: 500;
@@ -88,17 +88,17 @@ textarea {
     margin-right: 1rem;
 }
 
-.upload-card .nav-tabs .nav-link.active {
+.custom-card .nav-tabs .nav-link.active {
     border-bottom: 2px solid #7db0e6 !important;
     color: #7db0e6;
     font-weight: 600;
 }
 
-.upload-card .card-body {
+.custom-card .card-body {
     padding: unset !important;
 }
 
-.upload-card h5 {
+.custom-card h5 {
     color: #919dba;
     font-weight: 600;
     font-size: 17px;
