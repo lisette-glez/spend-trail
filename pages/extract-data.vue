@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const runtimeConfig = useRuntimeConfig();
 const isUpload = ref(false);
 const isLoading = ref(false);
 const imgFile = ref("");
@@ -9,7 +8,6 @@ const activeTab = ref("device");
 const errorAlert = ref(false);
 const errorMessage = ref("");
 const extractedData = ref({});
-const docApiUrl = ref(runtimeConfig.public.apiBaseInvoice);
 const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
 const supabase = useSupabaseClient();
@@ -18,7 +16,7 @@ const parsedData = ref({});
 
 function onChange(e: any) {
   if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(e.files[0]);
     reader.onload = (e: any) => {
       imgPreview.value = e.target!.result;
@@ -35,24 +33,25 @@ function onChange(e: any) {
 }
 
 async function uploadImage() {
-  isLoading.value = true;
-  const formData = new FormData();
-  formData.append("document", imgFile.value);
-
-  const { data, error } = await useFetch<any>(docApiUrl, {
-    method: "post",
-    headers: { Authorization: "Token " + runtimeConfig.public.apiKey },
-    body: formData,
-  });
-
-  if (data.value?.api_request.status_code == 201) {
-    extractedData.value = data.value.document.inference.prediction;
-    parsedData.value = renameKeys(extractedData.value);
-    isLoading.value = false;
-    responseSuccess.value = true;
-  } else {
-    alert(error.value?.data.api_request.error.message);
-    goBack();
+  try {
+    isLoading.value = true;
+    const formData = new FormData();
+    formData.append("document", imgFile.value);
+    const data = await $fetch<any>("/api/receipt", {
+      method: "POST",
+      body: formData,
+    });
+    if (data.api_request.status_code == 201) {
+      extractedData.value = data.document.inference.prediction;
+      parsedData.value = renameKeys(extractedData.value);
+      isLoading.value = false;
+      responseSuccess.value = true;
+    } else {
+      alert(data.api_request.error.message);
+      goBack();
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -63,17 +62,17 @@ function getUrl(url: string) {
 
 function getDocType(type: string) {
   selectedType.value = type;
-  switch (selectedType.value) {
-    case "Invoice":
-      docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
-      break;
-    case "Expense Receipt":
-      docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
-      break;
-    case "Passport":
-      docApiUrl.value = runtimeConfig.public.apiBasePassport;
-      break;
-  }
+  // switch (selectedType.value) {
+  //   case "Invoice":
+  //     docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
+  //     break;
+  //   case "Expense Receipt":
+  //     docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
+  //     break;
+  //   case "Passport":
+  //     docApiUrl.value = runtimeConfig.public.apiBasePassport;
+  //     break;
+  // }
   uploadImage();
 }
 
@@ -338,14 +337,7 @@ async function saveImgStorage(file: any, id: string) {
           <button type="button" class="btn btn-primary" @click="goBack">
             <i class="bi-arrow-left-short"></i> Go back
           </button>
-          <button
-            class="btn github-btn ms-3"
-            type="button"
-            @click="saveData"
-            v-if="
-              selectedType == 'Invoice' || selectedType == 'Expense Receipt'
-            "
-          >
+          <button class="btn github-btn ms-3" type="button" @click="saveData">
             <i class="bi bi-save"></i>
             Save data
           </button>
