@@ -1,18 +1,20 @@
 <script setup lang="ts">
-const isUpload = ref(false);
+import type { Document } from "../types/document";
+const extractedData = ref<Document>();
+const parsedData = ref<any>({});
 const isLoading = ref(false);
+const responseSuccess = ref(false);
+
+const isUpload = ref(false);
 const imgFile = ref("");
 const imgPreview = ref("");
-const responseSuccess = ref(false);
 const activeTab = ref("device");
 const errorAlert = ref(false);
 const errorMessage = ref("");
-const extractedData = ref({});
 const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const parsedData = ref({});
 
 function onChange(e: any) {
   if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
@@ -33,21 +35,22 @@ function onChange(e: any) {
 }
 
 async function uploadImage() {
+  isLoading.value = true;
+  const formData = new FormData();
+  formData.append("document", imgFile.value);
+  extractedData.value = await $fetch<Document>("/api/receipt", {
+    method: "POST",
+    body: formData,
+  });
   try {
-    isLoading.value = true;
-    const formData = new FormData();
-    formData.append("document", imgFile.value);
-    const data = await $fetch<any>("/api/receipt", {
-      method: "POST",
-      body: formData,
-    });
-    if (data.api_request.status_code == 201) {
-      extractedData.value = data.document.inference.prediction;
-      parsedData.value = renameKeys(extractedData.value);
+    if (extractedData.value.api_request.status_code == 201) {
+      parsedData.value = renameKeys(
+        extractedData.value.document.inference.prediction
+      );
       isLoading.value = false;
       responseSuccess.value = true;
     } else {
-      alert(data.api_request.error.message);
+      alert(extractedData.value.api_request.error.message);
       goBack();
     }
   } catch (error) {
@@ -85,7 +88,7 @@ function goBack() {
   responseSuccess.value = false;
   imgFile.value = "";
   imgPreview.value = "";
-  extractedData.value = {};
+  extractedData.value = <Document>{};
   parsedData.value = {};
   selectedType.value = "";
   isLoading.value = false;
@@ -322,8 +325,8 @@ async function saveImgStorage(file: any, id: string) {
           <div class="fw-bold key-name">LINE ITEMS</div>
           <li
             class="list-group-item mb-3"
-            v-for="(item, index) in parsedData.line_items"
-            :key="index"
+            v-for="item in parsedData.line_items"
+            :key="item.id"
           >
             <div>
               {{ item.quantity || 1 }}- {{ item.description }}
