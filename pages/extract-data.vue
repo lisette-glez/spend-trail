@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Document } from "../types/document";
+const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 const extractedData = ref<Document>();
 const parsedData = ref<any>({});
 const isLoading = ref(false);
@@ -13,8 +15,6 @@ const errorAlert = ref(false);
 const errorMessage = ref("");
 const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
-const supabase = useSupabaseClient();
-const user = useSupabaseUser();
 
 function onChange(e: any) {
   if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
@@ -100,39 +100,34 @@ function triggerUpload() {
 
 async function saveData() {
   if (extractedData.value) {
-    const record = {
-      user_id: user.value?.id,
-      doc_type: extractedData.value.document_type.value,
-      purchase_date: extractedData.value.date.value
-        ? new Date(extractedData.value.date.value)
+    const dataToSave = extractedData.value.document.inference.prediction;
+    const record: any = {
+      user_id: user.value!.id,
+      doc_type: dataToSave.document_type.value,
+      purchase_date: dataToSave.date.value,
+      category: dataToSave.category ? dataToSave.category.value : null,
+      sub_category: dataToSave.subcategory
+        ? dataToSave.subcategory.value
         : null,
-      category: extractedData.value.category
-        ? extractedData.value.category.value
+      supplier_name: dataToSave.supplier_name.value,
+      total_net: dataToSave.total_net.value,
+      total_amount: dataToSave.total_amount.value,
+      tip: dataToSave.tip ? dataToSave.tip.value : null,
+      total_tax: dataToSave.total_tax ? dataToSave.total_tax.value : null,
+      customer_address: dataToSave.customer_address
+        ? dataToSave.customer_address.value
         : null,
-      sub_category: extractedData.value.subcategory
-        ? extractedData.value.subcategory.value
+      customer_name: dataToSave.customer_name
+        ? dataToSave.customer_name.value
         : null,
-      supplier_name: extractedData.value.supplier_name.value,
-      total_net: extractedData.value.total_net.value,
-      total_amount: extractedData.value.total_amount.value,
-      tip: extractedData.value.tip ? extractedData.value.tip.value : null,
-      total_tax: extractedData.value.total_tax
-        ? extractedData.value.total_tax.value
+      due_date: dataToSave.due_date
+        ? new Date(dataToSave.due_date.value)
         : null,
-      customer_address: extractedData.value.customer_address
-        ? extractedData.value.customer_address.value
+      invoice_number: dataToSave.invoice_number
+        ? dataToSave.invoice_number.value
         : null,
-      customer_name: extractedData.value.customer_name
-        ? extractedData.value.customer_name.value
-        : null,
-      due_date: extractedData.value.due_date.value
-        ? new Date(extractedData.value.due_date.value)
-        : null,
-      invoice_number: extractedData.value.invoice_number
-        ? extractedData.value.invoice_number.value
-        : null,
-      supplier_address: extractedData.value.supplier_address
-        ? extractedData.value.supplier_address.value
+      supplier_address: dataToSave.supplier_address
+        ? dataToSave.supplier_address.value
         : null,
     };
 
@@ -271,7 +266,7 @@ async function saveImgStorage(file: any, id: string) {
             class="data-container"
             v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
           >
-            <div class="fw-bold key-name">Taxes</div>
+            <div class="fw-bold key-name text-uppercase">Taxes</div>
             <li
               class="list-group-item mb-3"
               v-for="(tax, index) in parsedData.taxes"

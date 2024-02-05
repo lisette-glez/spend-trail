@@ -135,7 +135,7 @@ export interface Document {
           confidence: number;
           page_id: number;
           polygon: number[];
-          value: string;
+          value: Date;
         };
         due_date: {
           confidence: number;
@@ -200,19 +200,28 @@ export interface Document {
           confidence: number;
           page_id: number;
           polygon: number[];
-          value: string;
+          value: number;
         };
         total_net: {
           confidence: number;
           page_id: number;
           polygon: number[];
-          value: string;
+          value: number;
         };
         total_tax: {
           confidence: number;
           page_id: number;
           polygon: number[];
+          value: number;
+        };
+        category: {
           value: string;
+        };
+        subcategory: {
+          value: string;
+        };
+        tip: {
+          value: number;
         };
       };
       processing_time: number;
