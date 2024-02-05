@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const docType = ref("Invoice");
+const docType = ref("Expense Receipt");
 const emit = defineEmits(["selectedDocType"]);
 
 function changeDocType(type: string) {
@@ -31,7 +31,7 @@ function changeDocType(type: string) {
         <div class="modal-body text-center">
           <h5 class="mb-4">Select a document type</h5>
           <div class="row mb-3 justify-content-center px-4">
-            <div class="col-md-4">
+            <div class="col-md-5">
               <div
                 class="card doc-type-card p-2"
                 :class="{ typeActive: docType == 'Expense Receipt' }"
@@ -40,22 +40,13 @@ function changeDocType(type: string) {
                 <i class="bi-receipt pe-1"></i> <span>Receipt</span>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
               <div
                 class="card doc-type-card p-2"
                 :class="{ typeActive: docType == 'Invoice' }"
                 @click="changeDocType('Invoice')"
               >
                 <i class="bi-file-earmark-text pe-1"></i> <span>Invoice</span>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div
-                class="card doc-type-card p-2"
-                :class="{ typeActive: docType == 'Passport' }"
-                @click="changeDocType('Passport')"
-              >
-                <i class="bi-journal-medical pe-1"></i> <span>Passport</span>
               </div>
             </div>
           </div>

@@ -34,49 +34,51 @@ function onChange(e: any) {
   }
 }
 
-async function uploadImage() {
+function getDocType(type: string) {
+  selectedType.value = type;
   isLoading.value = true;
+  if (selectedType.value == "Expense Receipt") {
+    processData("/api/receipt");
+  } else if (selectedType.value == "Invoice") {
+    processData("/api/invoice");
+  } else {
+    alert("No document type selected");
+  }
+}
+
+async function processData(apiurl: string) {
   const formData = new FormData();
   formData.append("document", imgFile.value);
-  extractedData.value = await $fetch<Document>("/api/receipt", {
+  extractedData.value = await $fetch<Document>(apiurl, {
     method: "POST",
     body: formData,
   });
-  try {
-    if (extractedData.value.api_request.status_code == 201) {
-      parsedData.value = renameKeys(
-        extractedData.value.document.inference.prediction
-      );
-      isLoading.value = false;
-      responseSuccess.value = true;
-    } else {
-      alert(extractedData.value.api_request.error.message);
-      goBack();
-    }
-  } catch (error) {
-    console.log(error);
+  displayData();
+}
+
+function displayData() {
+  if (
+    extractedData.value &&
+    extractedData.value.api_request.status_code == 201
+  ) {
+    parsedData.value = renameKeys(
+      extractedData.value!.document.inference.prediction
+    );
+    isLoading.value = false;
+    responseSuccess.value = true;
+  } else {
+    alert(
+      extractedData.value
+        ? extractedData.value.api_request.error.message
+        : "An error occurred processing the data"
+    );
+    goBack();
   }
 }
 
 function getUrl(url: string) {
   imgFile.value = imgPreview.value = url;
   isUpload.value = true;
-}
-
-function getDocType(type: string) {
-  selectedType.value = type;
-  // switch (selectedType.value) {
-  //   case "Invoice":
-  //     docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
-  //     break;
-  //   case "Expense Receipt":
-  //     docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
-  //     break;
-  //   case "Passport":
-  //     docApiUrl.value = runtimeConfig.public.apiBasePassport;
-  //     break;
-  // }
-  uploadImage();
 }
 
 function changeTab(tabName: string) {
@@ -231,7 +233,7 @@ async function saveImgStorage(file: any, id: string) {
             data-bs-target="#myModal"
           >
             <div class="nav-link">
-              <i class="bi-upload pe-1"></i> Upload
+              <i class="bi-file-arrow-down"></i> Extract data
               <span
                 class="spinner-border text-primary spinner-border-sm ms-1"
                 role="status"
@@ -242,7 +244,7 @@ async function saveImgStorage(file: any, id: string) {
           </li>
           <li class="nav-item cs-pointer" @click="goBack">
             <div class="nav-link">
-              <i class="bi-x-circle pe-1 text-danger"></i> Cancel
+              <i class="bi-x-circle text-danger"></i> Cancel
             </div>
           </li>
         </ul>
@@ -297,21 +299,6 @@ async function saveImgStorage(file: any, id: string) {
               <div>{{ parsedData.locale.currency }}</div>
             </li>
           </div>
-          <div
-            class="data-container"
-            v-if="
-              selectedType == 'Passport' && parsedData.given_names.length > 0
-            "
-          >
-            <div class="fw-bold key-name">GIVEN NAMES</div>
-            <li
-              class="list-group-item mb-3"
-              v-for="(name, index) in parsedData.given_names"
-              :key="index"
-            >
-              <div>{{ name.value }}</div>
-            </li>
-          </div>
         </ul>
         <ul
           class="list-group rounded-0"
@@ -336,7 +323,7 @@ async function saveImgStorage(file: any, id: string) {
             <i class="bi-arrow-left-short"></i> Go back
           </button>
           <button class="btn github-btn ms-3" type="button" @click="saveData">
-            <i class="bi bi-save"></i>
+            <i class="bi bi-database"></i>
             Save data
           </button>
         </div>
