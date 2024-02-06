@@ -6,24 +6,30 @@ const extractedData = ref<Document>();
 const parsedData = ref<any>({});
 const isLoading = ref(false);
 const responseSuccess = ref(false);
+const imgFile = ref<File | string>("");
+const imgPreview = ref("");
 
 const isUpload = ref(false);
-const imgFile = ref("");
-const imgPreview = ref("");
+
 const activeTab = ref("device");
 const errorAlert = ref(false);
 const errorMessage = ref("");
 const selectedType = ref("");
 const uploadInput = ref<HTMLInputElement | null>(null);
 
-function onChange(e: any) {
-  if (e.files[0] && e.files[0].type.match("(jpeg|png|webp|heic|tiff)")) {
+function onChange(event: Event) {
+  const files =
+    event.type == "change"
+      ? (event.target as HTMLInputElement).files
+      : (event as DragEvent).dataTransfer!.files;
+
+  if (files && files![0].type.match("(jpeg|png|webp|heic|tiff)")) {
     const reader = new FileReader();
-    reader.readAsDataURL(e.files[0]);
-    reader.onload = (e: any) => {
-      imgPreview.value = e.target!.result;
+    reader.readAsDataURL(files![0]);
+    reader.onload = (e) => {
+      imgPreview.value = (e.target as FileReader).result as string;
     };
-    imgFile.value = e.files[0];
+    imgFile.value = files![0];
     isUpload.value = true;
     errorAlert.value = false;
   } else {
@@ -47,13 +53,19 @@ function getDocType(type: string) {
 }
 
 async function processData(apiurl: string) {
-  const formData = new FormData();
-  formData.append("document", imgFile.value);
-  extractedData.value = await $fetch<Document>(apiurl, {
-    method: "POST",
-    body: formData,
-  });
-  displayData();
+  try {
+    if (!imgFile.value) return;
+    const formData = new FormData();
+    formData.append("document", imgFile.value);
+    extractedData.value = await $fetch<Document>(apiurl, {
+      method: "POST",
+      body: formData,
+    });
+    displayData();
+  } catch (error) {
+    console.log(error);
+    alert("An error occurred while processing the file");
+  }
 }
 
 function displayData() {
@@ -185,7 +197,7 @@ async function saveImgStorage(file: any, id: string) {
           @dragover.prevent
           @dragenter.prevent
           @dragstart.prevent
-          @drop.prevent="onChange($event.dataTransfer)"
+          @drop.prevent="onChange($event)"
           :class="{ noPaddingTop: isUpload }"
         >
           <div class="file-input" v-if="!isUpload" @click="triggerUpload">
@@ -194,11 +206,7 @@ async function saveImgStorage(file: any, id: string) {
                 src="~/assets/img/upload-img.png"
                 class="img-fluid upload-image"
               />
-              <input
-                type="file"
-                ref="uploadInput"
-                @change="onChange($event.target)"
-              />
+              <input type="file" ref="uploadInput" @change="onChange($event)" />
             </div>
           </div>
           <div class="row justify-content-center">
