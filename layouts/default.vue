@@ -1,9 +1,9 @@
 <template>
   <div>
-    <TheHeader />
+    <Header />
     <main class="container mt-5">
       <slot />
     </main>
-    <TheFooter />
+    <Footer />
   </div>
 </template>

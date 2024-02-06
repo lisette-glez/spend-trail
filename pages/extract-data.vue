@@ -2,7 +2,7 @@
 import type { Document } from "../types/document";
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const extractedData = ref<Document>();
+const extractedData = ref<Document | null>(null);
 const parsedData = ref<any>({});
 const isLoading = ref(false);
 const responseSuccess = ref(false);
@@ -52,12 +52,12 @@ function getDocType(type: string) {
   }
 }
 
-async function processData(apiurl: string) {
+async function processData(apiUrl: string) {
   try {
     if (!imgFile.value) return;
     const formData = new FormData();
     formData.append("document", imgFile.value);
-    extractedData.value = await $fetch<Document>(apiurl, {
+    extractedData.value = await $fetch<Document>(apiUrl, {
       method: "POST",
       body: formData,
     });

@@ -1,56 +1,86 @@
 <script setup lang="ts">
-const runtimeConfig = useRuntimeConfig();
-const docApiUrl = ref(runtimeConfig.public.apiBaseReceipt);
-const imgUrl = ref(runtimeConfig.public.img1Url);
-const extractedData = ref({});
+import type { Document } from "../types/document";
+const imgUrl = ref(useRuntimeConfig().public.img1Url);
+const imgFile = ref<File | string>("");
+const extractedData = ref<Document | null>(null);
+const parsedData = ref<any>({});
 const previewImg = ref("/_nuxt/assets/img/demo/receipt.png");
 const loading = ref(false);
 const activeImg = ref("Receipt");
 
 onMounted(() => {
-  processImage();
+  processImage("/api/receipt");
 });
 
-async function processImage() {
-  loading.value = true;
-  const formData = new FormData();
-  formData.append("document", imgUrl.value);
+async function processImage(apiUrl: string) {
+  try {
+    loading.value = true;
+    await convertDocument();
+    const formData = new FormData();
+    formData.append("document", imgFile.value);
+    extractedData.value = await $fetch<Document>(apiUrl, {
+      method: "POST",
+      body: formData,
+    });
 
-  const { data, error } = await useFetch<any>(docApiUrl, {
-    method: "post",
-    headers: { Authorization: "Token " + runtimeConfig.public.apiKey },
-    body: formData,
-  });
+    displayData();
+  } catch (error) {
+    console.log(error);
+    alert("An error occurred while processing the file");
+  }
+}
 
-  if (data.value?.api_request.status_code == 201) {
-    extractedData.value = renameKeys(data.value.document.inference.prediction);
+function displayData() {
+  if (
+    extractedData.value &&
+    extractedData.value.api_request.status_code == 201
+  ) {
+    parsedData.value = renameKeys(
+      extractedData.value!.document.inference.prediction
+    );
     loading.value = false;
   } else {
-    alert(error.value?.data.api_request.error.message);
+    alert(
+      extractedData.value
+        ? extractedData.value.api_request.error.message
+        : "An error occurred processing the data"
+    );
   }
 }
 
 function changeImage(img: string) {
   activeImg.value = img;
-  extractedData.value = {};
-  switch (activeImg.value) {
-    case "Receipt":
-      previewImg.value = "/_nuxt/assets/img/demo/receipt.png";
-      imgUrl.value = runtimeConfig.public.img1Url;
-      docApiUrl.value = runtimeConfig.public.apiBaseReceipt;
-      break;
-    case "Invoice":
-      previewImg.value = "/_nuxt/assets/img/demo/invoice.png";
-      imgUrl.value = runtimeConfig.public.img2Url;
-      docApiUrl.value = runtimeConfig.public.apiBaseInvoice;
-      break;
-    case "Passport":
-      previewImg.value = "/_nuxt/assets/img/demo/passport.jpg";
-      imgUrl.value = runtimeConfig.public.img4Url;
-      docApiUrl.value = runtimeConfig.public.apiBasePassport;
-      break;
+  extractedData.value = null;
+  if (activeImg.value == "Receipt") {
+    previewImg.value = "/_nuxt/assets/img/demo/receipt.png";
+    imgUrl.value = useRuntimeConfig().public.img1Url;
+    processImage("/api/receipt");
+  } else if (activeImg.value == "Invoice") {
+    processImage("/api/invoice");
+    previewImg.value = "/_nuxt/assets/img/demo/invoice.png";
+    imgUrl.value = useRuntimeConfig().public.img2Url;    
   }
-  processImage();
+}
+
+async function imageUrlToFile(url: string): Promise<File> {
+  // Fetch image data from the URL
+  const response = await fetch(url);
+  const blob = await response.blob();
+  // Extract filename from URL
+  const filename = url.substring(url.lastIndexOf("/") + 1);
+  // Create a File object from the fetched image data
+  const file = new File([blob], filename, { type: blob.type });
+  return file;
+}
+
+async function convertDocument() {
+  await imageUrlToFile(imgUrl.value)
+    .then((file) => {
+      imgFile.value = file;
+    })
+    .catch((error) => {
+      console.error("Error converting image URL to File:", error);
+    });
 }
 </script>
 
@@ -76,13 +106,6 @@ function changeImage(img: string) {
               @click="changeImage('Invoice')"
             />
           </div>
-          <div class="mt-3 col-md-4">
-            <img
-              src="~/assets/img/demo/passport.jpg"
-              class="img-thumbnail cs-pointer"
-              @click="changeImage('Passport')"
-            />
-          </div>
         </div>
       </div>
       <div class="col-md-8 extracted-data ps-md-5">
@@ -100,7 +123,7 @@ function changeImage(img: string) {
           class="list-group rounded-0 d-flex flex-row flex-wrap"
           v-if="!loading"
         >
-          <template v-for="(text, key) in extractedData" :key="key">
+          <template v-for="(text, key) in parsedData" :key="key">
             <div v-if="text.value != null" class="data-container">
               <div class="fw-bold key-name text-uppercase">{{ key }}</div>
               <li class="list-group-item mb-3">
@@ -108,23 +131,23 @@ function changeImage(img: string) {
               </li>
             </div>
           </template>
-          <div class="data-container" v-if="extractedData.locale">
+          <div class="data-container" v-if="parsedData.locale">
             <div class="fw-bold key-name">CURRENCY</div>
             <li class="list-group-item">
-              <div>{{ extractedData.locale.currency }}</div>
+              <div>{{ parsedData.locale.currency }}</div>
             </li>
           </div>
           <div
             class="data-container"
             v-if="
-              extractedData.reference_numbers &&
-              extractedData.reference_numbers.length > 0
+              parsedData.reference_numbers &&
+              parsedData.reference_numbers.length > 0
             "
           >
             <div class="fw-bold key-name">PO #</div>
             <li
               class="list-group-item mb-3"
-              v-for="(reference, index) in extractedData.reference_numbers"
+              v-for="(reference, index) in parsedData.reference_numbers"
               :key="index"
             >
               <div>{{ reference.value }}</div>
@@ -134,16 +157,16 @@ function changeImage(img: string) {
         <ul
           class="list-group rounded-0"
           v-if="
-            extractedData.line_items &&
-            extractedData.line_items.length > 0 &&
+            parsedData.line_items &&
+            parsedData.line_items.length > 0 &&
             !loading
           "
         >
           <div class="fw-bold key-name">LINE ITEMS</div>
           <li
             class="list-group-item mb-3"
-            v-for="(item, index) in extractedData.line_items"
-            :key="index"
+            v-for="(item, index) in parsedData.line_items"
+            :key="item.id"
           >
             <div>
               {{ item.quantity || 1 }}- {{ item.description }}
