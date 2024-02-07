@@ -44,7 +44,7 @@ const logout = async () => {
         >
       </li>
     </ul>
-    <ul class="navbar-nav ms-auto">
+    <ul class="navbar-nav ms-auto pe-4">
       <div v-if="user">
         <li class="nav-item dropdown">
           <a
@@ -86,5 +86,6 @@ const logout = async () => {
         </li>
       </div>
     </ul>
+    <ColorModeSwitch />
   </nav>
 </template>

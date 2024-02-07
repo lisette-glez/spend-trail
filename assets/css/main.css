@@ -3,6 +3,10 @@ body {
     background-image: linear-gradient(to right, #74ebd5 0%, #9face6 100%);
 }
 
+.dark-mode body {
+    background-image: linear-gradient(to right, #196456 0%,#4e5a92 100%)!important;
+}
+
 .email-btn {
     background-color: #7db0e6;
     border-color: #7db0e6;  

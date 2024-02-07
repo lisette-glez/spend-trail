@@ -4,7 +4,7 @@ export default defineNuxtConfig({
     "bootstrap/dist/css/bootstrap.css",
     "bootstrap-icons/font/bootstrap-icons.css",
   ],
-  modules: ["@nuxtjs/supabase", "@nuxt/image"],
+  modules: ["@nuxtjs/supabase", "@nuxt/image", "@nuxtjs/color-mode"],
   plugins: [{ src: "~/plugins/bootstrap.js", mode: "client" }],
   image: {
     providers: {
