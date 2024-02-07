@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { Document } from "../types/document";
-const imgUrl = ref(useRuntimeConfig().public.img1Url);
+const imgUrl = ref(useRuntimeConfig().public.receiptImgUrl);
 const imgFile = ref<File | string>("");
 const extractedData = ref<Document | null>(null);
 const parsedData = ref<any>({});
-const previewImg = ref("/_nuxt/assets/img/demo/receipt.png");
+const previewImg = ref("b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c");
 const loading = ref(false);
 const activeImg = ref("Receipt");
 
@@ -30,6 +30,27 @@ async function processImage(apiUrl: string) {
   }
 }
 
+async function imageUrlToFile(url: string): Promise<File> {
+  // Fetch image data from the URL
+  const response = await fetch(url);
+  const blob = await response.blob();
+  // Extract filename from URL
+  const filename = url.substring(url.lastIndexOf("/") + 1);
+  // Create a File object from the fetched image data
+  const file = new File([blob], filename, { type: blob.type });
+  return file;
+}
+
+async function convertDocument() {
+  await imageUrlToFile(imgUrl.value)
+    .then((file) => {
+      imgFile.value = file;
+    })
+    .catch((error) => {
+      console.error("Error converting image URL to File:", error);
+    });
+}
+
 function displayData() {
   if (
     extractedData.value &&
@@ -52,35 +73,14 @@ function changeImage(img: string) {
   activeImg.value = img;
   extractedData.value = null;
   if (activeImg.value == "Receipt") {
-    previewImg.value = "/_nuxt/assets/img/demo/receipt.png";
-    imgUrl.value = useRuntimeConfig().public.img1Url;
+    previewImg.value = "b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c";
+    imgUrl.value = useRuntimeConfig().public.receiptImgUrl;
     processImage("/api/receipt");
   } else if (activeImg.value == "Invoice") {
     processImage("/api/invoice");
-    previewImg.value = "/_nuxt/assets/img/demo/invoice.png";
-    imgUrl.value = useRuntimeConfig().public.img2Url;    
+    previewImg.value = "e38dad66-8f1a-4821-8598-cf1239c118d4";
+    imgUrl.value = useRuntimeConfig().public.invoiceImgUrl;
   }
-}
-
-async function imageUrlToFile(url: string): Promise<File> {
-  // Fetch image data from the URL
-  const response = await fetch(url);
-  const blob = await response.blob();
-  // Extract filename from URL
-  const filename = url.substring(url.lastIndexOf("/") + 1);
-  // Create a File object from the fetched image data
-  const file = new File([blob], filename, { type: blob.type });
-  return file;
-}
-
-async function convertDocument() {
-  await imageUrlToFile(imgUrl.value)
-    .then((file) => {
-      imgFile.value = file;
-    })
-    .catch((error) => {
-      console.error("Error converting image URL to File:", error);
-    });
 }
 </script>
 
@@ -89,19 +89,27 @@ async function convertDocument() {
     <div class="row justify-content-center">
       <div class="col-md-4">
         <div class="d-inline-block overflow-hidden bg-light">
-          <img :src="previewImg" class="demo-img img-fluid border" />
+          <NuxtImg
+            :src="previewImg"
+            provider="myProvider"
+            class="demo-img img-fluid border"
+            width="944"
+            height="586"
+          />
         </div>
         <div class="row">
           <div class="mt-3 col-md-4">
-            <img
-              src="~/assets/img/demo/receipt.png"
+            <NuxtImg
+              src="b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c"
+              provider="myProvider"
               class="img-thumbnail cs-pointer"
               @click="changeImage('Receipt')"
             />
           </div>
           <div class="mt-3 col-md-4">
-            <img
-              src="~/assets/img/demo/invoice.png"
+            <NuxtImg
+              src="e38dad66-8f1a-4821-8598-cf1239c118d4"
+              provider="myProvider"
               class="img-thumbnail cs-pointer"
               @click="changeImage('Invoice')"
             />

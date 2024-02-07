@@ -202,10 +202,7 @@ async function saveImgStorage(file: any, id: string) {
         >
           <div class="file-input" v-if="!isUpload" @click="triggerUpload">
             <div for="file">
-              <img
-                src="~/assets/img/upload-img.png"
-                class="img-fluid upload-image"
-              />
+              <img src="/upload-img.png" class="img-fluid upload-image" />
               <input type="file" ref="uploadInput" @change="onChange($event)" />
             </div>
           </div>

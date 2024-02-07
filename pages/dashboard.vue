@@ -2,8 +2,8 @@
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const fetchedData = ref(<any>null);
-const receiptUrl = ref(<any>null);
 const activeTab = ref("EXPENSE RECEIPT");
+const docId = ref("");
 
 onMounted(() => {
   fetchUploadData();
@@ -36,9 +36,8 @@ function changeTab(tabName: string) {
   fetchUploadData();
 }
 
-function getReceiptImage(id: string) {
-  const url = supabase.storage.from("receipts").getPublicUrl(id);
-  receiptUrl.value = url.data.publicUrl;
+function getDocName(id: string) {
+  docId.value = id;
 }
 </script>
 
@@ -70,7 +69,7 @@ function getReceiptImage(id: string) {
                       class="bi bi-camera fs-5 cs-pointer"
                       data-bs-toggle="modal"
                       data-bs-target="#imgModal"
-                      @click="getReceiptImage(item.id)"
+                      @click="getDocName(item.id)"
                     ></i>
                   </div>
                 </div>
@@ -123,7 +122,14 @@ function getReceiptImage(id: string) {
                   ></button>
                 </div>
                 <div class="modal-body px-4 pt-1">
-                  <img :src="receiptUrl" class="img-fluid" />
+                  <NuxtImg
+                    v-if="docId"
+                    :src="docId"
+                    provider="myProvider"
+                    class="img-fluid"
+                    width="944"
+                    height="586"
+                  />
                 </div>
               </div>
             </div>
