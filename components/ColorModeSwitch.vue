@@ -11,7 +11,7 @@ const onClick = () =>
     <template v-if="colorMode.value === 'dark'">
       <span
         ><i
-          class="bi-sun cs-pointer text-light"
+          class="bi-sun cs-pointer text-light fs-5"
           name="light-mode"
           @click="onClick"
         ></i
@@ -21,7 +21,7 @@ const onClick = () =>
     <template v-else>
       <span
         ><i
-          class="bi-moon-stars cs-pointer text-light"
+          class="bi-moon-stars cs-pointer fs-5 text-light"
           name="dark-mode"
           @click="onClick"
         ></i

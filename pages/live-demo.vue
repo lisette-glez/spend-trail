@@ -117,73 +117,11 @@ function changeImage(img: string) {
         </div>
       </div>
       <div class="col-md-8 extracted-data ps-md-5">
-        <h5 class="mb-3">
-          EXTRACTED DATA FROM YOUR
-          <span class="text-uppercase">{{ activeImg }}</span>
-          <span
-            class="spinner-border text-primary spinner-border-sm ms-2"
-            role="status"
-            aria-hidden="true"
-            v-if="loading"
-          ></span>
-        </h5>
-        <ul
-          class="list-group rounded-0 d-flex flex-row flex-wrap"
-          v-if="!loading"
-        >
-          <template v-for="(text, key) in parsedData" :key="key">
-            <div v-if="text.value != null" class="data-container">
-              <div class="fw-bold key-name text-uppercase">{{ key }}</div>
-              <li class="list-group-item mb-3">
-                <div>{{ text.value }}</div>
-              </li>
-            </div>
-          </template>
-          <div class="data-container" v-if="parsedData.locale">
-            <div class="fw-bold key-name">CURRENCY</div>
-            <li class="list-group-item">
-              <div>{{ parsedData.locale.currency }}</div>
-            </li>
-          </div>
-          <div
-            class="data-container"
-            v-if="
-              parsedData.reference_numbers &&
-              parsedData.reference_numbers.length > 0
-            "
-          >
-            <div class="fw-bold key-name">PO #</div>
-            <li
-              class="list-group-item mb-3"
-              v-for="(reference, index) in parsedData.reference_numbers"
-              :key="index"
-            >
-              <div>{{ reference.value }}</div>
-            </li>
-          </div>
-        </ul>
-        <ul
-          class="list-group rounded-0"
-          v-if="
-            parsedData.line_items &&
-            parsedData.line_items.length > 0 &&
-            !loading
-          "
-        >
-          <div class="fw-bold key-name">LINE ITEMS</div>
-          <li
-            class="list-group-item mb-3"
-            v-for="(item, index) in parsedData.line_items"
-            :key="item.id"
-          >
-            <div>
-              {{ item.quantity || 1 }}- {{ item.description }}
-              <span v-if="item.unit_price"> ${{ item.unit_price }}.00</span>
-              -
-              {{ item.total_amount }}
-            </div>
-          </li>
-        </ul>
+        <DisplayData
+          :data="parsedData"
+          :docType="activeImg"
+          :loading="loading"
+        />
       </div>
     </div>
   </div>

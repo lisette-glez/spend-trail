@@ -253,76 +253,10 @@ async function saveImgStorage(file: any, id: string) {
             </div>
           </li>
         </ul>
-        <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img w-100" />
+        <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img" />
       </div>
       <div class="col-md-8 extracted-data" v-if="responseSuccess">
-        <h5 class="mb-3">
-          EXTRACTED DATA FROM YOUR
-          <span class="text-uppercase">{{ selectedType }}</span>
-        </h5>
-        <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
-          <template v-for="(text, key) in parsedData" :key="key">
-            <div v-if="text.value != null" class="data-container">
-              <div class="fw-bold key-name text-uppercase">{{ key }}</div>
-              <li class="list-group-item mb-3">
-                <div>{{ text.value }}</div>
-              </li>
-            </div>
-          </template>
-          <div
-            class="data-container"
-            v-if="selectedType == 'Invoice' && parsedData.taxes.length > 0"
-          >
-            <div class="fw-bold key-name text-uppercase">Taxes</div>
-            <li
-              class="list-group-item mb-3"
-              v-for="(tax, index) in parsedData.taxes"
-              :key="index"
-            >
-              <div>{{ tax.rate }}% - {{ tax.value }}</div>
-            </li>
-          </div>
-          <div
-            class="data-container"
-            v-if="
-              parsedData.reference_numbers &&
-              parsedData.reference_numbers.length > 0
-            "
-          >
-            <div class="fw-bold key-name">PO #</div>
-            <li
-              class="list-group-item mb-3"
-              v-for="(reference, index) in parsedData.reference_numbers"
-              :key="index"
-            >
-              <div>{{ reference.value }}</div>
-            </li>
-          </div>
-          <div class="data-container" v-if="parsedData.locale">
-            <div class="fw-bold key-name">CURRENCY</div>
-            <li class="list-group-item">
-              <div>{{ parsedData.locale.currency }}</div>
-            </li>
-          </div>
-        </ul>
-        <ul
-          class="list-group rounded-0"
-          v-if="parsedData.line_items && parsedData.line_items.length > 0"
-        >
-          <div class="fw-bold key-name">LINE ITEMS</div>
-          <li
-            class="list-group-item mb-3"
-            v-for="item in parsedData.line_items"
-            :key="item.id"
-          >
-            <div>
-              {{ item.quantity || 1 }}- {{ item.description }}
-              <span v-if="item.unit_price">x {{ item.unit_price }}.00</span>
-              -
-              {{ item.total_amount }}
-            </div>
-          </li>
-        </ul>
+        <DisplayData :data="parsedData" :docType="selectedType" />
         <div class="text-end mt-5">
           <button type="button" class="btn btn-primary" @click="goBack">
             <i class="bi-arrow-left-short"></i> Go back
