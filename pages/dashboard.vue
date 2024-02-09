@@ -4,12 +4,14 @@ const user = useSupabaseUser();
 const fetchedData = ref(<any>null);
 const activeTab = ref("EXPENSE RECEIPT");
 const docId = ref("");
+const loading = ref(false);
 
 onMounted(() => {
   fetchUploadData();
 });
 
 async function fetchUploadData() {
+  loading.value = true;
   let query = supabase
     .from("documents")
     .select(
@@ -23,7 +25,7 @@ async function fetchUploadData() {
   const { data, error } = await query.order("purchase_date", {
     ascending: false,
   });
-
+  loading.value = false;
   if (error) {
     console.log(error);
   } else {
@@ -60,7 +62,17 @@ function getDocName(id: string) {
           </li>
         </ul>
         <div class="row justify-content-start pt-2">
-          <div class="col-md-4" v-for="item in fetchedData" :key="item.id">
+          <div class="text-center mt-2" v-if="loading">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div
+            class="col-md-4"
+            v-for="item in fetchedData"
+            :key="item.id"
+            v-else
+          >
             <div class="card mb-4 border-info">
               <div class="ps-4 pe-3 pt-1 pb-3">
                 <div class="row">
