@@ -13,34 +13,29 @@ const logout = async () => {
     return;
   }
 
-  await navigateTo("/auth");
+  await navigateTo("/login");
 };
 </script>
 
 <template>
-  <nav class="navbar navbar-expand shadow-sm ps-4 pe-5 py-0">
+  <nav class="navbar navbar-expand shadow-sm px-4 py-0">
     <NuxtLink to="/" class="nav-link">
       <img src="/spendtrail.png" class="w-50 pt-2"
     /></NuxtLink>
-    <ul class="navbar-nav me-auto">
+    <ul class="navbar-nav me-auto" v-if="user">
       <li class="nav-item cs-pointer mx-4">
         <NuxtLink to="/dashboard" class="nav-link"
           ><span class="text-light fs-5">Dashboard</span></NuxtLink
         >
       </li>
       <li class="nav-item cs-pointer me-4">
-        <NuxtLink to="/live-demo" class="nav-link"
-          ><span class="text-light fs-5">Live demo</span></NuxtLink
-        >
-      </li>
-      <li class="nav-item cs-pointer me-4">
-        <NuxtLink to="/extract-data" class="nav-link"
+        <NuxtLink to="/" class="nav-link"
           ><span class="text-light fs-5">Extract data</span></NuxtLink
         >
       </li>
-      <li class="nav-item cs-pointer">
-        <NuxtLink to="/" class="nav-link"
-          ><span class="text-light fs-5">About</span></NuxtLink
+      <li class="nav-item cs-pointer me-4">
+        <NuxtLink to="/live-demo" class="nav-link"
+          ><span class="text-light fs-5">Live demo</span></NuxtLink
         >
       </li>
     </ul>
@@ -75,14 +70,6 @@ const logout = async () => {
               ></NuxtLink>
             </li>
           </ul>
-        </li>
-      </div>
-      <div v-else>
-        <li class="nav-item cs-pointer">
-          <NuxtLink to="/login" class="nav-link icon-link icon-link-hover">
-            <i class="bi bi-box-arrow-in-right text-light fs-5 h-auto"></i>
-            <span class="text-light fs-5 ps-2">Sign in </span>
-          </NuxtLink>
         </li>
       </div>
     </ul>

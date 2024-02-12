@@ -4,7 +4,7 @@ const emit = defineEmits(["typedUrl"]);
 </script>
 
 <template>
-  <div class="row mt-5 mb-4 justify-content-center">
+  <div class="row my-4 justify-content-center">
     <div class="col-md-9 offset-md-1">
       <div class="input-group link-input">
         <span class="input-group-text bg-transparent">

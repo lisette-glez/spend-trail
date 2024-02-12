@@ -83,7 +83,7 @@ const handleGoogleLogin = async () => {
 </script>
 
 <template>
-  <div class="row justify-content-center pt-4">
+  <div class="row justify-content-center">
     <div class="col-md-4">
       <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
       <div class="card card-login shadow-sm">
