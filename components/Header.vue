@@ -18,9 +18,9 @@ const logout = async () => {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand shadow-sm px-5 py-0">
+  <nav class="navbar navbar-expand shadow-sm ps-4 pe-5 py-0">
     <NuxtLink to="/" class="nav-link">
-      <img src="/logo.png" class="w-75"
+      <img src="/spendtrail.png" class="w-50 pt-2"
     /></NuxtLink>
     <ul class="navbar-nav me-auto">
       <li class="nav-item cs-pointer mx-4">
