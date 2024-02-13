@@ -22,23 +22,7 @@ const logout = async () => {
     <NuxtLink to="/" class="nav-link">
       <img src="/spendtrail.png" class="w-50 pt-2"
     /></NuxtLink>
-    <ul class="navbar-nav me-auto" v-if="user">
-      <li class="nav-item cs-pointer mx-4">
-        <NuxtLink to="/dashboard" class="nav-link"
-          ><span class="text-light fs-5">Dashboard</span></NuxtLink
-        >
-      </li>
-      <li class="nav-item cs-pointer me-4">
-        <NuxtLink to="/" class="nav-link"
-          ><span class="text-light fs-5">Extract data</span></NuxtLink
-        >
-      </li>
-      <li class="nav-item cs-pointer me-4">
-        <NuxtLink to="/live-demo" class="nav-link"
-          ><span class="text-light fs-5">Live demo</span></NuxtLink
-        >
-      </li>
-    </ul>
+    <Menu v-if="user" />
     <ul class="navbar-nav ms-auto pe-4">
       <div v-if="user">
         <li class="nav-item dropdown">
