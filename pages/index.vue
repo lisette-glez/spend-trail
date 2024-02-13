@@ -177,8 +177,8 @@ async function saveImgStorage(file: any, id: string) {
 <template>
   <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
   <div class="row justify-content-center" v-if="!isUpload">
-    <div class="col-md-7">
-      <div class="card custom-card px-5 pt-3 pb-5 shadow-sm border-0">
+    <div class="col-md-9 col-lg-6">
+      <div class="card custom-card px-4 px-md-5 pt-3 pb-5 shadow-sm border-0">
         <ul class="nav nav-tabs mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('device')">
             <a class="nav-link" :class="{ active: activeTab == 'device' }"
@@ -228,32 +228,12 @@ async function saveImgStorage(file: any, id: string) {
   <div class="card custom-card p-4" v-if="isUpload">
     <div class="row justify-content-center">
       <div class="col-md-4">
-        <ul
-          class="nav nav-tabs justify-content-end mb-4"
-          v-if="!responseSuccess"
-        >
-          <li
-            class="nav-item cs-pointer"
-            data-bs-toggle="modal"
-            data-bs-target="#myModal"
-          >
-            <div class="nav-link">
-              <i class="bi-file-arrow-down"></i> Extract data
-              <span
-                class="spinner-border text-primary spinner-border-sm ms-1"
-                role="status"
-                aria-hidden="true"
-                v-if="isLoading"
-              ></span>
-            </div>
-          </li>
-          <li class="nav-item cs-pointer" @click="goBack">
-            <div class="nav-link">
-              <i class="bi-x-circle text-danger"></i> Cancel
-            </div>
-          </li>
-        </ul>
-        <img :src="imgPreview" class="img-fluid py-3 px-2 preview-img" />
+        <PreviewImage
+          :preview="imgPreview"
+          :success="responseSuccess"
+          :loading="isLoading"
+          @clearData="goBack"
+        />
       </div>
       <div class="col-md-8 extracted-data" v-if="responseSuccess">
         <DisplayData :data="parsedData" :docType="selectedType" />
