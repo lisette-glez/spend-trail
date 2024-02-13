@@ -18,46 +18,81 @@ const logout = async () => {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand shadow-sm px-4 py-0">
-    <NuxtLink to="/" class="nav-link">
-      <img src="/spendtrail.png" class="w-50 pt-2"
-    /></NuxtLink>
-    <Menu v-if="user" />
-    <ul class="navbar-nav ms-auto pe-4">
-      <div v-if="user">
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle text-light fs-6 pe-0"
-            data-bs-toggle="dropdown"
-            href="#"
-            role="button"
-            aria-expanded="false"
-          >
-            <img
-              v-if="profile"
-              class="img-thumbnail rounded-circle"
-              style="width: 2rem; height: 2rem"
-              :src="profile"
-            />
-            <i
-              class="bi bi-person-circle fs-4 text-primary align-middle"
-              v-if="!profile"
-            ></i>
-
-            {{ name }}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end border-0 my-0 py-1">
-            <li>
-              <NuxtLink @click="logout" class="dropdown-item pe-1"
-                ><div class="text-end fs-6 cs-pointer">
-                  Logout <i class="bi bi-door-closed pe-2"></i></div
-              ></NuxtLink>
-            </li>
-          </ul>
-        </li>
+  <nav class="navbar navbar-expand-lg pe-lg-4 py-lg-0">
+    <div class="container-fluid">
+      <div class="toggler-wrapper">
+        <NuxtLink to="/" class="navbar-brand">
+          <img src="/spendtrail.png" class="w-50 w-lg pt-2"
+        /></NuxtLink>
+        <button
+          class="navbar-toggler p-1"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSpendTrail"
+          aria-controls="navbarSpendTrail"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon fs-6"></span>
+        </button>
       </div>
-    </ul>
-    <ColorModeSwitch />
-    <SocialIcons />
+      <div class="collapse navbar-collapse" id="navbarSpendTrail">
+        <Menu v-if="user" />
+        <ul class="navbar-nav ms-lg-auto pe-4 mb-3 mb-lg-0 ps-5 ps-lg-0">
+          <div v-if="user">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle text-light text-sm pe-0"
+                data-bs-toggle="dropdown"
+                href="#"
+                role="button"
+                aria-expanded="false"
+              >
+                <img
+                  v-if="profile"
+                  class="img-thumbnail rounded-circle"
+                  style="width: 2rem; height: 2rem"
+                  :src="profile"
+                />
+                <i
+                  class="bi bi-person-circle fs-4 text-primary align-middle"
+                  v-if="!profile"
+                ></i>
+                {{ name }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end border-0 my-0 py-1">
+                <li>
+                  <NuxtLink @click="logout" class="dropdown-item pe-1"
+                    ><div class="text-end fs-6 cs-pointer">
+                      Logout <i class="bi bi-door-closed pe-2"></i></div
+                  ></NuxtLink>
+                </li>
+              </ul>
+            </li>
+          </div>
+        </ul>
+        <div class="d-flex ps-5 ps-lg-0">
+          <ColorModeSwitch />
+          <SocialIcons />
+        </div>
+      </div>
+    </div>
   </nav>
 </template>
+
+<style>
+.toggler-wrapper {
+  display: contents;
+}
+
+.navbar-nav {
+  width: max-content;
+}
+
+@media (max-width: 45em) {
+  .toggler-wrapper {
+    display: flex;
+    align-items: center;
+  }
+}
+</style>

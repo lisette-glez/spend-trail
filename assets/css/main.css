@@ -73,6 +73,7 @@ body {
      cursor: pointer;
      opacity: 0;
      z-index: -2;
+     width: 15px;
  }
 
 .btn-icon {
@@ -206,4 +207,10 @@ textarea {
      /* Opera */
     transform: scale(1.6);
     cursor: zoom-in
+}
+
+@media (min-width: 48em) and (max-width: 70em) {
+    .w-lg {
+        width: 150px!important;
+    }
 }

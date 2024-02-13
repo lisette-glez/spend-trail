@@ -9,24 +9,28 @@ const onClick = () =>
 <template>
   <ColorScheme>
     <template v-if="colorMode.value === 'dark'">
-      <span
-        ><i
-          class="bi-sun cs-pointer text-light fs-5"
-          name="light-mode"
-          @click="onClick"
-        ></i
-      ></span>
-      <span class="visually-hidden">Light Mode</span>
+      <div class="me-4">
+        <span
+          ><i
+            class="bi-sun cs-pointer text-light text-sm"
+            name="light-mode"
+            @click="onClick"
+          ></i
+        ></span>
+        <span class="visually-hidden">Light Mode</span>
+      </div>
     </template>
     <template v-else>
-      <span
-        ><i
-          class="bi-moon-stars cs-pointer fs-5 text-light"
-          name="dark-mode"
-          @click="onClick"
-        ></i
-      ></span>
-      <span class="visually-hidden">Dark Mode</span>
+      <div class="me-4">
+        <span
+          ><i
+            class="bi-moon-stars cs-pointer text-sm text-light"
+            name="dark-mode"
+            @click="onClick"
+          ></i
+        ></span>
+        <span class="visually-hidden">Dark Mode</span>
+      </div>
     </template>
   </ColorScheme>
 </template>
