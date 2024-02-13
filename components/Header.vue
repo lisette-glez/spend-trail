@@ -74,5 +74,6 @@ const logout = async () => {
       </div>
     </ul>
     <ColorModeSwitch />
+    <SocialIcons />
   </nav>
 </template>
