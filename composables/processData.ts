@@ -10,6 +10,6 @@ export const useProcessData = async (apiUrl: string, file: File) => {
     });
   } catch (error) {
     console.log(error);
-    alert("An error occurred while processing the file");
+    alert("Sorry! Error occurred while processing the file");
   }
 };

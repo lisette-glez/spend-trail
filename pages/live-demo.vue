@@ -1,57 +1,21 @@
 <script setup lang="ts">
-import type { Document } from "../types/document";
 const imgUrl = ref(useRuntimeConfig().public.receiptImgUrl);
-const imgFile = ref<File | string>("");
-const extractedData = ref<Document | null>(null);
-const parsedData = ref<any>({});
+const imgFile = ref();
 const previewImg = ref("b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c");
-const loading = ref(false);
 const activeImg = ref("Receipt");
+const apiUrl = ref("/api/receipt");
+const componentKey = ref(0);
 
 onMounted(() => {
-  processImage("/api/receipt");
+  convertDocument();
 });
 
-const { data } = useAsyncData("demoData", async () => {
-  const imageData = await useProcessData(props.url, props.file);
-  const parsedData: any = useRenameKeys(
-    imageData!.document.inference.prediction
-  );
-  loading.value = false;
-  return parsedData;
-});
-
-async function processImage(apiUrl: string) {
-  try {
-    loading.value = true;
-    await convertDocument();
-    const formData = new FormData();
-    formData.append("document", imgFile.value);
-    extractedData.value = await $fetch<Document>(apiUrl, {
-      method: "POST",
-      body: formData,
-    });
-
-    displayData();
-  } catch (error) {
-    console.log(error);
-    alert("An error occurred while processing the file");
-  }
-}
-
-async function imageUrlToFile(url: string): Promise<File> {
-  // Fetch image data from the URL
-  const response = await fetch(url);
-  const blob = await response.blob();
-  // Extract filename from URL
-  const filename = url.substring(url.lastIndexOf("/") + 1);
-  // Create a File object from the fetched image data
-  const file = new File([blob], filename, { type: blob.type });
-  return file;
-}
+const forceRerender = () => {
+  componentKey.value += 1;
+};
 
 async function convertDocument() {
-  await imageUrlToFile(imgUrl.value)
+  await convertUrlToFile(imgUrl.value)
     .then((file) => {
       imgFile.value = file;
     })
@@ -60,36 +24,19 @@ async function convertDocument() {
     });
 }
 
-function displayData() {
-  if (
-    extractedData.value &&
-    extractedData.value.api_request.status_code == 201
-  ) {
-    parsedData.value = renameKeys(
-      extractedData.value!.document.inference.prediction
-    );
-    loading.value = false;
-  } else {
-    alert(
-      extractedData.value
-        ? extractedData.value.api_request.error.message
-        : "An error occurred processing the data"
-    );
-  }
-}
-
-function changeImage(img: string) {
+async function changeImage(img: string) {
   activeImg.value = img;
-  extractedData.value = null;
   if (activeImg.value == "Receipt") {
+    apiUrl.value = "/api/receipt";
     previewImg.value = "b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c";
     imgUrl.value = useRuntimeConfig().public.receiptImgUrl;
-    processImage("/api/receipt");
-  } else if (activeImg.value == "Invoice") {
-    processImage("/api/invoice");
+  } else {
+    apiUrl.value = "/api/invoice";
     previewImg.value = "e38dad66-8f1a-4821-8598-cf1239c118d4";
     imgUrl.value = useRuntimeConfig().public.invoiceImgUrl;
   }
+  await convertDocument();
+  forceRerender();
 }
 </script>
 
@@ -127,9 +74,10 @@ function changeImage(img: string) {
       </div>
       <div class="col-md-8 extracted-data ps-md-5">
         <DisplayData
-          :data="parsedData"
+          :file="imgFile"
+          :url="apiUrl"
           :docType="activeImg"
-          :loading="loading"
+          :key="componentKey"
         />
       </div>
     </div>

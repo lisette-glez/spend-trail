@@ -61,7 +61,7 @@ const { data } = useAsyncData("imageData", async () => {
       </div>
       <div
         class="data-container"
-        v-if="data.reference_numbers && data.reference_numbers.length > 0"
+        v-if="data?.reference_numbers && data?.reference_numbers.length > 0"
       >
         <div class="fw-bold key-name">PO #</div>
         <li
@@ -72,7 +72,7 @@ const { data } = useAsyncData("imageData", async () => {
           <div>{{ reference.value }}</div>
         </li>
       </div>
-      <div class="data-container" v-if="data.locale">
+      <div class="data-container" v-if="data?.locale">
         <div class="fw-bold key-name">CURRENCY</div>
         <li class="list-group-item">
           <div>{{ data.locale.currency }}</div>
@@ -81,7 +81,7 @@ const { data } = useAsyncData("imageData", async () => {
     </ul>
     <ul
       class="list-group rounded-0"
-      v-if="data.line_items && data.line_items.length > 0"
+      v-if="data?.line_items && data?.line_items.length > 0"
     >
       <div class="fw-bold key-name">LINE ITEMS</div>
       <li
