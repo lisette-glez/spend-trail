@@ -12,6 +12,15 @@ onMounted(() => {
   processImage("/api/receipt");
 });
 
+const { data } = useAsyncData("demoData", async () => {
+  const imageData = await useProcessData(props.url, props.file);
+  const parsedData: any = useRenameKeys(
+    imageData!.document.inference.prediction
+  );
+  loading.value = false;
+  return parsedData;
+});
+
 async function processImage(apiUrl: string) {
   try {
     loading.value = true;

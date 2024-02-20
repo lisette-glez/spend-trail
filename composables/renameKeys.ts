@@ -1,4 +1,4 @@
-export function renameKeys(obj: object) {
+export const useRenameKeys = (obj: object) => {
   return Object.keys(obj).reduce(
     (newObj, key) => ({
       ...newObj,
@@ -11,4 +11,4 @@ export function renameKeys(obj: object) {
     }),
     {}
   );
-}
+};

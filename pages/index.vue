@@ -13,6 +13,7 @@ const uploaded = ref(false);
 const preview = ref("");
 const imageFile = ref();
 const errorMessage = ref("");
+const imageUrl = ref("/api/receipt");
 
 function getUploadData(isUpload: boolean, imgFile: File, message: string) {
   uploaded.value = isUpload;
@@ -24,48 +25,11 @@ function getDocType(type: string) {
   selectedType.value = type;
   isLoading.value = true;
   if (selectedType.value == "Expense Receipt") {
-    processData("/api/receipt");
-  } else if (selectedType.value == "Invoice") {
-    processData("/api/invoice");
+    imageUrl.value = "/api/receipt";
   } else {
-    alert("No document type selected");
+    imageUrl.value = "/api/invoice";
   }
-}
-
-async function processData(apiUrl: string) {
-  try {
-    if (!imageFile.value) return;
-    const formData = new FormData();
-    formData.append("document", imageFile.value);
-    extractedData.value = await $fetch<Document>(apiUrl, {
-      method: "POST",
-      body: formData,
-    });
-    displayData();
-  } catch (error) {
-    console.log(error);
-    alert("An error occurred while processing the file");
-  }
-}
-
-function displayData() {
-  if (
-    extractedData.value &&
-    extractedData.value.api_request.status_code == 201
-  ) {
-    parsedData.value = renameKeys(
-      extractedData.value!.document.inference.prediction
-    );
-    isLoading.value = false;
-    responseSuccess.value = true;
-  } else {
-    alert(
-      extractedData.value
-        ? extractedData.value.api_request.error.message
-        : "An error occurred processing the data"
-    );
-    goBack();
-  }
+  responseSuccess.value = true;
 }
 
 function getUrl(url: string) {
@@ -180,6 +144,13 @@ async function saveImgStorage(file: any, id: string) {
   </div>
   <div class="card custom-card p-4" v-if="uploaded">
     <div class="row justify-content-center">
+      <div class="col-md-8 extracted-data" v-if="responseSuccess">
+        <DisplayData
+          :file="imageFile"
+          :url="imageUrl"
+          :docType="selectedType"
+        />
+      </div>
       <div class="col-md-4">
         <PreviewImage
           :file="imageFile"
@@ -187,10 +158,7 @@ async function saveImgStorage(file: any, id: string) {
           :loading="isLoading"
           @clearData="goBack"
         />
-      </div>
-      <div class="col-md-8 extracted-data" v-if="responseSuccess">
-        <DisplayData :data="parsedData" :docType="selectedType" />
-        <div class="text-end mt-5">
+        <div class="text-end mt-5" v-if="responseSuccess">
           <button type="button" class="btn btn-primary" @click="goBack">
             <i class="bi-arrow-left-short"></i> Go back
           </button>

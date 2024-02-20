@@ -1,32 +1,44 @@
 <script setup lang="ts">
+const loading = ref(true);
 const props = defineProps({
-  data: {
-    type: Object,
+  file: {
+    type: File,
+    required: true,
+  },
+  url: {
+    type: String,
     required: true,
   },
   docType: {
     type: String,
     required: true,
   },
-  loading: {
-    type: Boolean,
-    required: false,
-  },
+});
+
+const { data } = useAsyncData("imageData", async () => {
+  const imageData = await useProcessData(props.url, props.file);
+  const parsedData: any = useRenameKeys(
+    imageData!.document.inference.prediction
+  );
+  loading.value = false;
+  return parsedData;
 });
 </script>
+
 <template>
   <h5 class="mb-3">
     EXTRACTED DATA FROM YOUR
     <span class="text-uppercase">{{ props.docType }}</span>
+    <span
+      class="spinner-border text-primary spinner-border-sm ms-3"
+      role="status"
+      aria-hidden="true"
+      v-if="loading"
+    ></span>
   </h5>
-  <div class="text-center mt-5" v-if="props.loading">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-  <template v-else
-    ><ul class="list-group rounded-0 d-flex flex-row flex-wrap">
-      <template v-for="(text, key) in props.data" :key="key">
+  <div v-if="!loading">
+    <ul class="list-group rounded-0 d-flex flex-row flex-wrap">
+      <template v-for="(text, key) in data" :key="key">
         <div v-if="text.value != null" class="data-container">
           <div class="fw-bold key-name text-uppercase">{{ key }}</div>
           <li class="list-group-item mb-3">
@@ -36,48 +48,45 @@ const props = defineProps({
       </template>
       <div
         class="data-container"
-        v-if="props.docType == 'Invoice' && props.data.taxes.length > 0"
+        v-if="props.docType == 'Invoice' && data?.taxes.length > 0"
       >
         <div class="fw-bold key-name text-uppercase">Taxes</div>
         <li
           class="list-group-item mb-3"
-          v-for="(tax, index) in props.data.taxes"
-          :key="index"
+          v-for="tax in data.taxes"
+          :key="tax.id"
         >
           <div>{{ tax.rate }}% - {{ tax.value }}</div>
         </li>
       </div>
       <div
         class="data-container"
-        v-if="
-          props.data.reference_numbers &&
-          props.data.reference_numbers.length > 0
-        "
+        v-if="data.reference_numbers && data.reference_numbers.length > 0"
       >
         <div class="fw-bold key-name">PO #</div>
         <li
           class="list-group-item mb-3"
-          v-for="(reference, index) in props.data.reference_numbers"
+          v-for="(reference, index) in data.reference_numbers"
           :key="index"
         >
           <div>{{ reference.value }}</div>
         </li>
       </div>
-      <div class="data-container" v-if="props.data.locale">
+      <div class="data-container" v-if="data.locale">
         <div class="fw-bold key-name">CURRENCY</div>
         <li class="list-group-item">
-          <div>{{ props.data.locale.currency }}</div>
+          <div>{{ data.locale.currency }}</div>
         </li>
       </div>
     </ul>
     <ul
       class="list-group rounded-0"
-      v-if="props.data.line_items && props.data.line_items.length > 0"
+      v-if="data.line_items && data.line_items.length > 0"
     >
       <div class="fw-bold key-name">LINE ITEMS</div>
       <li
         class="list-group-item mb-3"
-        v-for="item in props.data.line_items"
+        v-for="item in data.line_items"
         :key="item.id"
       >
         <div>
@@ -87,6 +96,6 @@ const props = defineProps({
           {{ item.total_amount }}
         </div>
       </li>
-    </ul></template
-  >
+    </ul>
+  </div>
 </template>
