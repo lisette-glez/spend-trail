@@ -43,10 +43,9 @@ const logout = async () => {
           v-if="user"
         >
           <li class="nav-item dropdown">
-            <a
+            <NuxtLink
               class="nav-link dropdown-toggle text-light text-sm pe-0"
               data-bs-toggle="dropdown"
-              href="#"
               role="button"
               aria-expanded="false"
             >
@@ -61,7 +60,7 @@ const logout = async () => {
                 v-if="!profile"
               ></i>
               {{ name }}
-            </a>
+            </NuxtLink>
             <ul class="dropdown-menu dropdown-menu-end border-0 my-0 py-1">
               <li>
                 <NuxtLink @click="logout" class="dropdown-item pe-1"

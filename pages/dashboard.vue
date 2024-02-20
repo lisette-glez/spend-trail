@@ -49,15 +49,17 @@ function getDocName(id: string) {
       <div class="card custom-card px-5 pt-3 pb-5 shadow-sm">
         <ul class="nav nav-tabs mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('EXPENSE RECEIPT')">
-            <a
+            <NuxtLink
               class="nav-link"
               :class="{ active: activeTab == 'EXPENSE RECEIPT' }"
-              >RECEIPTS</a
+              >RECEIPTS</NuxtLink
             >
           </li>
           <li class="nav-item cs-pointer" @click="changeTab('INVOICE')">
-            <a class="nav-link" :class="{ active: activeTab == 'INVOICE' }"
-              >INVOICES</a
+            <NuxtLink
+              class="nav-link"
+              :class="{ active: activeTab == 'INVOICE' }"
+              >INVOICES</NuxtLink
             >
           </li>
         </ul>

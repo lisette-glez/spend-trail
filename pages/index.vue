@@ -155,13 +155,15 @@ async function saveImgStorage(file: any, id: string) {
       <div class="card custom-card px-4 px-md-5 pt-3 pb-5 shadow-sm border-0">
         <ul class="nav nav-tabs mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('device')">
-            <a class="nav-link" :class="{ active: activeTab == 'device' }"
-              >Upload</a
+            <NuxtLink
+              class="nav-link"
+              :class="{ active: activeTab == 'device' }"
+              >Upload</NuxtLink
             >
           </li>
           <li class="nav-item cs-pointer" @click="changeTab('link')">
-            <a class="nav-link" :class="{ active: activeTab == 'link' }"
-              >From URL</a
+            <NuxtLink class="nav-link" :class="{ active: activeTab == 'link' }"
+              >From URL</NuxtLink
             >
           </li>
         </ul>
