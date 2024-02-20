@@ -1,7 +1,8 @@
 <script setup lang="ts">
+const preview = ref("");
 const props = defineProps({
-  preview: {
-    type: String,
+  file: {
+    type: File,
     required: true,
   },
   success: {
@@ -14,7 +15,19 @@ const props = defineProps({
   },
 });
 
+onMounted(() => {
+  getImagePreview(props.file);
+});
+
 const emit = defineEmits(["clearData"]);
+
+function getImagePreview(file: File) {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = (e) => {
+    preview.value = reader.result as string;
+  };
+}
 </script>
 
 <template>
@@ -38,5 +51,5 @@ const emit = defineEmits(["clearData"]);
       <div class="nav-link"><i class="bi-x-circle text-danger"></i> Cancel</div>
     </li>
   </ul>
-  <img :src="props.preview" class="img-fluid py-3 px-2 preview-img" />
+  <img :src="preview" class="img-fluid py-3 px-2 preview-img" />
 </template>

@@ -22,7 +22,7 @@ const logout = async () => {
     <div class="container-fluid">
       <div class="toggler-wrapper">
         <NuxtLink to="/" class="navbar-brand">
-          <img src="/spendtrail.png" class="w-50 w-lg pt-2"
+          <img src="/spendtrail.png" class="w-50 w-lg pt-2 ps-2 ps-lg-4"
         /></NuxtLink>
         <button
           class="navbar-toggler p-1"
@@ -38,40 +38,41 @@ const logout = async () => {
       </div>
       <div class="collapse navbar-collapse" id="navbarSpendTrail">
         <Menu v-if="user" />
-        <ul class="navbar-nav ms-lg-auto pe-4 mb-3 mb-lg-0 ps-5 ps-lg-0">
-          <div v-if="user">
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle text-light text-sm pe-0"
-                data-bs-toggle="dropdown"
-                href="#"
-                role="button"
-                aria-expanded="false"
-              >
-                <img
-                  v-if="profile"
-                  class="img-thumbnail rounded-circle"
-                  style="width: 2rem; height: 2rem"
-                  :src="profile"
-                />
-                <i
-                  class="bi bi-person-circle fs-4 text-primary align-middle"
-                  v-if="!profile"
-                ></i>
-                {{ name }}
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end border-0 my-0 py-1">
-                <li>
-                  <NuxtLink @click="logout" class="dropdown-item pe-1"
-                    ><div class="text-end fs-6 cs-pointer">
-                      Logout <i class="bi bi-door-closed pe-2"></i></div
-                  ></NuxtLink>
-                </li>
-              </ul>
-            </li>
-          </div>
+        <ul
+          class="navbar-nav ms-lg-auto pe-4 mb-3 mb-lg-0 ps-5 ps-lg-0"
+          v-if="user"
+        >
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-light text-sm pe-0"
+              data-bs-toggle="dropdown"
+              href="#"
+              role="button"
+              aria-expanded="false"
+            >
+              <img
+                v-if="profile"
+                class="img-thumbnail rounded-circle"
+                style="width: 2rem; height: 2rem"
+                :src="profile"
+              />
+              <i
+                class="bi bi-person-circle fs-4 text-primary align-middle"
+                v-if="!profile"
+              ></i>
+              {{ name }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end border-0 my-0 py-1">
+              <li>
+                <NuxtLink @click="logout" class="dropdown-item pe-1"
+                  ><div class="text-end fs-6 cs-pointer">
+                    Logout <i class="bi bi-door-closed pe-2"></i></div
+                ></NuxtLink>
+              </li>
+            </ul>
+          </li>
         </ul>
-        <div class="d-flex ps-5 ps-lg-0">
+        <div class="d-flex ps-5 ps-lg-0 ms-auto">
           <ColorModeSwitch />
           <SocialIcons />
         </div>

@@ -6,38 +6,18 @@ const extractedData = ref<Document | null>(null);
 const parsedData = ref<any>({});
 const isLoading = ref(false);
 const responseSuccess = ref(false);
-const imgFile = ref<File | string>("");
-const imgPreview = ref("");
-
-const isUpload = ref(false);
-
 const activeTab = ref("device");
-const errorAlert = ref(false);
-const errorMessage = ref("");
 const selectedType = ref("");
-const uploadInput = ref<HTMLInputElement | null>(null);
 
-function onChange(event: Event) {
-  const files =
-    event.type == "change"
-      ? (event.target as HTMLInputElement).files
-      : (event as DragEvent).dataTransfer!.files;
+const uploaded = ref(false);
+const preview = ref("");
+const imageFile = ref();
+const errorMessage = ref("");
 
-  if (files && files![0].type.match("(jpeg|png|webp|heic|tiff)")) {
-    const reader = new FileReader();
-    reader.readAsDataURL(files![0]);
-    reader.onload = (e) => {
-      imgPreview.value = (e.target as FileReader).result as string;
-    };
-    imgFile.value = files![0];
-    isUpload.value = true;
-    errorAlert.value = false;
-  } else {
-    imgFile.value = "";
-    errorMessage.value =
-      "File type not allowed. You can upload only jpg, png, webp, heic and tiff images.";
-    errorAlert.value = true;
-  }
+function getUploadData(isUpload: boolean, imgFile: File, message: string) {
+  uploaded.value = isUpload;
+  imageFile.value = imgFile;
+  errorMessage.value = message;
 }
 
 function getDocType(type: string) {
@@ -54,9 +34,9 @@ function getDocType(type: string) {
 
 async function processData(apiUrl: string) {
   try {
-    if (!imgFile.value) return;
+    if (!imageFile.value) return;
     const formData = new FormData();
-    formData.append("document", imgFile.value);
+    formData.append("document", imageFile.value);
     extractedData.value = await $fetch<Document>(apiUrl, {
       method: "POST",
       body: formData,
@@ -89,8 +69,8 @@ function displayData() {
 }
 
 function getUrl(url: string) {
-  imgFile.value = imgPreview.value = url;
-  isUpload.value = true;
+  imageFile.value = preview.value = url;
+  uploaded.value = true;
 }
 
 function changeTab(tabName: string) {
@@ -98,18 +78,14 @@ function changeTab(tabName: string) {
 }
 
 function goBack() {
-  isUpload.value = false;
+  uploaded.value = false;
   responseSuccess.value = false;
-  imgFile.value = "";
-  imgPreview.value = "";
+  imageFile.value = "";
+  preview.value = "";
   extractedData.value = <Document>{};
   parsedData.value = {};
   selectedType.value = "";
   isLoading.value = false;
-}
-
-function triggerUpload() {
-  uploadInput.value?.click();
 }
 
 async function saveData() {
@@ -151,13 +127,12 @@ async function saveData() {
       .select("id");
 
     if (error) {
-      errorAlert.value = true;
       errorMessage.value = error.message;
       setTimeout(() => {
-        errorAlert.value = false;
+        errorMessage.value = "";
       }, 3500);
     } else {
-      saveImgStorage(imgFile.value, data[0].id);
+      saveImgStorage(imageFile.value, data[0].id);
       alert("The data was saved successfully!");
     }
   }
@@ -166,7 +141,6 @@ async function saveData() {
 async function saveImgStorage(file: any, id: string) {
   const { error } = await supabase.storage.from("receipts").upload(id, file);
   if (error) {
-    errorAlert.value = true;
     errorMessage.value = error.message;
   } else {
     alert("The img was saved successfully!");
@@ -175,8 +149,8 @@ async function saveImgStorage(file: any, id: string) {
 </script>
 
 <template>
-  <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
-  <div class="row justify-content-center" v-if="!isUpload">
+  <AppAlert v-if="errorMessage" :errorMessage="errorMessage" />
+  <div class="row justify-content-center" v-if="!uploaded">
     <div class="col-md-9 col-lg-6">
       <div class="card custom-card px-4 px-md-5 pt-3 pb-5 shadow-sm border-0">
         <ul class="nav nav-tabs mb-4">
@@ -191,45 +165,22 @@ async function saveImgStorage(file: any, id: string) {
             >
           </li>
         </ul>
-        <div
-          v-if="activeTab == 'device' && !isUpload"
-          class="uploader"
-          @dragover.prevent
-          @dragenter.prevent
-          @dragstart.prevent
-          @drop.prevent="onChange($event)"
-          :class="{ noPaddingTop: isUpload }"
-        >
-          <div class="file-input" v-if="!isUpload" @click="triggerUpload">
-            <div for="file">
-              <img src="/upload-img.png" class="img-fluid upload-image" />
-              <input type="file" ref="uploadInput" @change="onChange($event)" />
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <p
-                class="h6 upload-title"
-                v-if="!isUpload"
-                @click="triggerUpload"
-              >
-                Drag and drop an image here, or click to upload from your device
-              </p>
-            </div>
-          </div>
-        </div>
+        <UploadImage
+          v-if="activeTab == 'device' && !uploaded"
+          @uploadImage="getUploadData"
+        />
         <UploadByLink
           @typedUrl="getUrl"
-          v-if="activeTab == 'link' && !isUpload"
+          v-if="activeTab == 'link' && !uploaded"
         />
       </div>
     </div>
   </div>
-  <div class="card custom-card p-4" v-if="isUpload">
+  <div class="card custom-card p-4" v-if="uploaded">
     <div class="row justify-content-center">
       <div class="col-md-4">
         <PreviewImage
-          :preview="imgPreview"
+          :file="imageFile"
           :success="responseSuccess"
           :loading="isLoading"
           @clearData="goBack"
