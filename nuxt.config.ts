@@ -1,9 +1,6 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: [
-    "bootstrap/dist/css/bootstrap.css",
-    "bootstrap-icons/font/bootstrap-icons.css",
-  ],
+  css: ["@/assets/scss/main.scss", "bootstrap-icons/font/bootstrap-icons.css"],
   modules: ["@nuxtjs/supabase", "@nuxt/image", "@nuxtjs/color-mode"],
   plugins: [{ src: "~/plugins/bootstrap.js", mode: "client" }],
   image: {
