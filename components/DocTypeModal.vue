@@ -84,6 +84,6 @@ function changeDocType(type: string) {
 
 .doc-type-card:hover,
 .typeActive {
-  background-color: var(--gray-50);
+  background-color: var(--hover-50);
 }
 </style>

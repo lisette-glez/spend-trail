@@ -17,3 +17,9 @@
     </li>
   </ul>
 </template>
+
+<style lang="scss">
+.nav-link span:hover {
+  color: var(--blue-50) !important;
+}
+</style>
