@@ -55,7 +55,7 @@ const handleGithubLogin = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: "http://localhost:3000/confirm",
+      redirectTo: "http://lisette.dev/confirm",
     },
   });
 
@@ -72,7 +72,7 @@ const handleGoogleLogin = async () => {
         access_type: "offline",
         prompt: "consent",
       },
-      redirectTo: "http://localhost:3000/confirm",
+      redirectTo: "http://lisette.dev/confirm",
     },
   });
 
@@ -84,7 +84,7 @@ const handleGoogleLogin = async () => {
 
 <template>
   <div class="row justify-content-center">
-    <div class="col-md-4">
+    <div class="col-md-7 col-lg-5 col-xl-4">
       <AppAlert v-if="errorAlert" :errorMessage="errorMessage" />
       <div class="card card-login shadow-sm">
         <div class="p-5 text-center">

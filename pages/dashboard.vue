@@ -108,7 +108,7 @@ function getDocName(id: string) {
               </div>
               <div class="card-footer bg-light-subtle">
                 <div class="row">
-                  <div class="col-md-6 text-start text-uppercase">
+                  <div class="col-md-6 text-start text-uppercase text-nowrap">
                     {{ item.category ? item.category : item.invoice_number }}
                   </div>
                   <div class="col-md-6 text-start text-md-end">

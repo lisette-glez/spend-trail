@@ -41,9 +41,9 @@ async function changeImage(img: string) {
 </script>
 
 <template>
-  <div class="card main-card p-5 shadow-sm border-0">
+  <div class="card main-card p-3 p-md-5 shadow-sm border-0">
     <div class="row justify-content-center">
-      <div class="col-md-4">
+      <div class="col-lg-4">
         <div class="d-inline-block overflow-hidden bg-light">
           <NuxtImg
             :src="previewImg"
@@ -53,8 +53,8 @@ async function changeImage(img: string) {
             height="586"
           />
         </div>
-        <div class="row">
-          <div class="mt-3 col-md-4">
+        <div class="row mb-5">
+          <div class="mt-3 col-4">
             <NuxtImg
               src="b7ba9396-0d51-4e1a-a5db-9f6bdf613d5c"
               provider="myProvider"
@@ -62,17 +62,17 @@ async function changeImage(img: string) {
               @click="changeImage('Receipt')"
             />
           </div>
-          <div class="mt-3 col-md-4">
+          <div class="mt-3 col-4">
             <NuxtImg
               src="e38dad66-8f1a-4821-8598-cf1239c118d4"
               provider="myProvider"
-              class="img-thumbnail cs-pointer"
+              class="img-thumbnail cs-pointe"
               @click="changeImage('Invoice')"
             />
           </div>
         </div>
       </div>
-      <div class="col-md-8 extracted-data ps-md-5">
+      <div class="col-lg-8 extracted-data ps-lg-5">
         <DisplayData
           :file="imgFile"
           :url="apiUrl"
