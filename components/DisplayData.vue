@@ -30,7 +30,7 @@ const { data } = useAsyncData("imageData", async () => {
     EXTRACTED DATA FROM YOUR
     <span class="text-uppercase">{{ props.docType }}</span>
     <span
-      class="spinner-border text-primary spinner-border-sm ms-3"
+      class="spinner-border regular-color spinner-border-sm ms-3"
       role="status"
       aria-hidden="true"
       v-if="loading"
@@ -99,3 +99,30 @@ const { data } = useAsyncData("imageData", async () => {
     </ul>
   </div>
 </template>
+
+<style lang="scss">
+.extracted-data .list-group {
+  background-color: var(--gray-50);
+  padding: 1rem;
+}
+
+.extracted-data .list-group .key-name {
+  color: var(--gray-200);
+}
+
+.extracted-data .list-group .list-group-item {
+  border-left: 3px solid var(--blue-50);
+  padding: 5px 7px;
+}
+
+.data-container {
+  width: 100%;
+}
+
+@media (min-width: 45em) {
+  .data-container {
+    width: 30%;
+    margin-right: 1rem;
+  }
+}
+</style>

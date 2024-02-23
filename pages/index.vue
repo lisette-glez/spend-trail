@@ -115,8 +115,8 @@ async function saveImgStorage(file: any, id: string) {
 <template>
   <AppAlert v-if="errorMessage" :errorMessage="errorMessage" />
   <div class="row justify-content-center" v-if="!uploaded">
-    <div class="col-md-9 col-lg-6">
-      <div class="card custom-card px-4 px-md-5 pt-3 pb-5 shadow-sm border-0">
+    <div class="col-md-9 col-lg-7">
+      <div class="card main-card px-4 px-md-5 pt-3 pb-5 shadow-sm border-0">
         <ul class="nav nav-tabs mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('device')">
             <NuxtLink
@@ -142,30 +142,52 @@ async function saveImgStorage(file: any, id: string) {
       </div>
     </div>
   </div>
-  <div class="card custom-card p-4" v-if="uploaded">
-    <div class="row justify-content-center">
-      <div class="col-md-8 extracted-data" v-if="responseSuccess">
-        <DisplayData
-          :file="imageFile"
-          :url="imageUrl"
-          :docType="selectedType"
-        />
-      </div>
-      <div class="col-md-4">
+  <div class="row justify-content-center" v-if="uploaded && !responseSuccess">
+    <div class="col-md-9 col-lg-6">
+      <div class="card main-card p-4">
         <PreviewImage
           :file="imageFile"
           :success="responseSuccess"
           :loading="isLoading"
           @clearData="goBack"
         />
-        <div class="text-end mt-5" v-if="responseSuccess">
-          <button type="button" class="btn btn-primary" @click="goBack">
+      </div>
+    </div>
+  </div>
+  <div class="card main-card p-4" v-if="responseSuccess">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 mt-1 mb-5">
+        <PreviewImage
+          :file="imageFile"
+          :success="responseSuccess"
+          :loading="isLoading"
+          @clearData="goBack"
+        />
+        <div class="text-center mt-4">
+          <button
+            type="button"
+            class="btn regular-btn text-light mt-2"
+            @click="goBack"
+          >
             <i class="bi-arrow-left-short"></i> Go back
           </button>
-          <button class="btn github-btn ms-3" type="button" @click="saveData">
+          <button
+            class="btn green-btn text-light ms-3 mt-2"
+            type="button"
+            @click="saveData"
+          >
             <i class="bi bi-database"></i>
             Save data
           </button>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="extracted-data">
+          <DisplayData
+            :file="imageFile"
+            :url="imageUrl"
+            :docType="selectedType"
+          />
         </div>
       </div>
     </div>

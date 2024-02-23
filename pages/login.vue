@@ -129,7 +129,7 @@ const handleGoogleLogin = async () => {
           </div>
           <div class="d-grid gap-2 mt-2">
             <button
-              class="btn email-btn mt-2 mb-3"
+              class="btn regular-btn text-light mt-2 mb-3"
               type="button"
               @click="signIn ? signInWithEmail() : signUpNewUser()"
             >
@@ -140,15 +140,11 @@ const handleGoogleLogin = async () => {
           </div>
           <p class="mb-0" v-if="signIn">
             Don't have an account?
-            <span class="text-primary cs-pointer" @click="signIn = !signIn"
-              >Sign Up</span
-            >
+            <span class="link-50" @click="signIn = !signIn">Sign Up</span>
           </p>
           <p v-else>
             Already have an account?
-            <span class="text-primary cs-pointer" @click="signIn = !signIn"
-              >Sign in</span
-            >
+            <span class="link-50" @click="signIn = !signIn">Sign in</span>
           </p>
           <div class="text-success">
             <hr />
@@ -163,7 +159,7 @@ const handleGoogleLogin = async () => {
               Continue with Google
             </button>
             <button
-              class="btn github-btn mt-2 mb-4"
+              class="btn green-btn text-light mt-2 mb-4"
               type="button"
               @click="handleGithubLogin"
             >
@@ -176,3 +172,20 @@ const handleGoogleLogin = async () => {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.card-login .bi-person-circle {
+  font-size: var(--text-xl);
+  color: var(--green-light);
+}
+
+.card-login p {
+  font-size: var(--text-sm);
+  margin-bottom: 0.5rem;
+}
+
+.link-50 {
+  cursor: pointer;
+  color: var(--blue-50);
+}
+</style>

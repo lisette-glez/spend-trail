@@ -22,7 +22,7 @@ const logout = async () => {
     <div class="container-fluid">
       <div class="toggler-wrapper">
         <NuxtLink to="/" class="navbar-brand">
-          <img src="/spendtrail.png" class="w-50 w-lg pt-2 ps-2 ps-lg-4"
+          <img src="/spendtrail.png" class="w-60 w-lg pt-2 ps-2 ps-lg-4"
         /></NuxtLink>
         <button
           class="navbar-toggler p-1"
@@ -44,7 +44,7 @@ const logout = async () => {
         >
           <li class="nav-item dropdown">
             <NuxtLink
-              class="nav-link dropdown-toggle text-light text-sm pe-0"
+              class="nav-link dropdown-toggle text-light pe-0"
               data-bs-toggle="dropdown"
               role="button"
               aria-expanded="false"
@@ -56,7 +56,7 @@ const logout = async () => {
                 :src="profile"
               />
               <i
-                class="bi bi-person-circle fs-4 text-primary align-middle"
+                class="bi bi-person-circle fs-4 align-middle"
                 v-if="!profile"
               ></i>
               {{ name }}
@@ -80,7 +80,7 @@ const logout = async () => {
   </nav>
 </template>
 
-<style>
+<style lang="scss">
 .toggler-wrapper {
   display: contents;
 }
@@ -93,6 +93,12 @@ const logout = async () => {
   .toggler-wrapper {
     display: flex;
     align-items: center;
+  }
+}
+
+@media (min-width: 48em) and (max-width: 70em) {
+  .w-lg {
+    width: 150px !important;
   }
 }
 </style>

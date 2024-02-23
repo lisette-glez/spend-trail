@@ -12,7 +12,7 @@ const onClick = () =>
       <div class="me-4">
         <span
           ><i
-            class="bi-sun cs-pointer text-light text-sm"
+            class="bi-sun cs-pointer text-light fs-5"
             name="light-mode"
             @click="onClick"
           ></i
@@ -24,7 +24,7 @@ const onClick = () =>
       <div class="me-4">
         <span
           ><i
-            class="bi-moon-stars cs-pointer text-sm text-light"
+            class="bi-moon-stars cs-pointer text-light fs-5"
             name="dark-mode"
             @click="onClick"
           ></i

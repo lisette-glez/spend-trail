@@ -35,7 +35,7 @@ function triggerUpload() {
     @dragenter.prevent
     @dragstart.prevent
     @drop.prevent="onChange($event)"
-    :class="{ noPaddingTop: isUpload }"
+    :class="{ 'pt-0': isUpload }"
   >
     <div class="file-input" v-if="!isUpload" @click="triggerUpload">
       <div for="file">
@@ -52,3 +52,38 @@ function triggerUpload() {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.uploader {
+  padding: 80px 0 35px 0;
+  text-align: center;
+  border: 2.5px dashed var(--gray-100);
+  position: relative;
+  background-color: var(--gray-50);
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.upload-image {
+  margin-top: -50px;
+  width: 50%;
+}
+
+.file-input {
+  width: 150px;
+  margin: auto;
+  height: 55px;
+  position: relative;
+}
+
+.file-input input {
+  background: #fff;
+  position: absolute;
+  left: 0;
+  padding: 10px;
+  cursor: pointer;
+  opacity: 0;
+  z-index: -2;
+  width: 15px;
+}
+</style>

@@ -26,3 +26,18 @@ const emit = defineEmits(["typedUrl"]);
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.link-input .input-group-text {
+  background-color: var(--gray-50);
+  font-size: var(--text-md);
+  color: var(--blue-50);
+}
+
+.link-input input::placeholder,
+.upload-title {
+  color: var(--gray-200);
+  opacity: 0.7;
+  font-size: var(--text-sm);
+}
+</style>

@@ -20,7 +20,8 @@ function changeDocType(type: string) {
   >
     <div class="modal-dialog modal-md modal-dialog-centered" role="document">
       <div class="modal-content">
-        <div class="modal-header border-0 pb-0">
+        <div class="modal-header">
+          <h5 class="modal-title">Select document type</h5>
           <button
             type="button"
             class="btn-close"
@@ -29,18 +30,17 @@ function changeDocType(type: string) {
           ></button>
         </div>
         <div class="modal-body text-center">
-          <h5 class="mb-4">Select a document type</h5>
-          <div class="row mb-3 justify-content-center px-4">
-            <div class="col-md-5">
+          <div class="row my-3 justify-content-center">
+            <div class="col-md-4">
               <div
-                class="card doc-type-card p-2"
+                class="card doc-type-card p-2 mb-3"
                 :class="{ typeActive: docType == 'Expense Receipt' }"
                 @click="changeDocType('Expense Receipt')"
               >
                 <i class="bi-receipt pe-1"></i> <span>Receipt</span>
               </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4 offset-md-1">
               <div
                 class="card doc-type-card p-2"
                 :class="{ typeActive: docType == 'Invoice' }"
@@ -54,7 +54,7 @@ function changeDocType(type: string) {
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn regular-btn text-light"
             data-bs-dismiss="modal"
             @click="emit('selectedDocType', docType)"
           >
@@ -65,3 +65,25 @@ function changeDocType(type: string) {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.doc-type-card {
+  border-color: var(--blue-50);
+  cursor: pointer;
+}
+
+.doc-type-card i {
+  color: var(--blue-50);
+  font-size: var(--text-lg);
+}
+
+.doc-type-card span {
+  font-size: var(--text-base);
+  color: var(--gray-200);
+}
+
+.doc-type-card:hover,
+.typeActive {
+  background-color: var(--gray-50);
+}
+</style>

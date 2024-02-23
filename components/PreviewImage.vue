@@ -31,7 +31,7 @@ function getImagePreview(file: File) {
 </script>
 
 <template>
-  <ul class="nav nav-tabs justify-content-end mb-4" v-if="!props.success">
+  <ul class="nav nav-tabs mb-4" v-if="!props.success">
     <li
       class="nav-item cs-pointer"
       data-bs-toggle="modal"
@@ -40,7 +40,7 @@ function getImagePreview(file: File) {
       <div class="nav-link">
         <i class="bi-file-arrow-down"></i> Extract data
         <span
-          class="spinner-border text-primary spinner-border-sm ms-1"
+          class="spinner-border regular-color spinner-border-sm ms-1"
           role="status"
           aria-hidden="true"
           v-if="props.loading"
@@ -51,5 +51,15 @@ function getImagePreview(file: File) {
       <div class="nav-link"><i class="bi-x-circle text-danger"></i> Cancel</div>
     </li>
   </ul>
-  <img :src="preview" class="img-fluid py-3 px-2 preview-img" />
+  <img :src="preview" class="img-fluid w-100 preview-img" />
 </template>
+
+<style lang="scss">
+.bi-file-arrow-down {
+  color: var(--blue-50);
+}
+
+.preview-img {
+  border: 0.5px solid var(--blue-50);
+}
+</style>

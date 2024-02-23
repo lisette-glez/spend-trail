@@ -41,14 +41,14 @@ async function changeImage(img: string) {
 </script>
 
 <template>
-  <div class="card custom-card px-5 py-5 shadow-sm border-0">
+  <div class="card main-card p-5 shadow-sm border-0">
     <div class="row justify-content-center">
       <div class="col-md-4">
         <div class="d-inline-block overflow-hidden bg-light">
           <NuxtImg
             :src="previewImg"
             provider="myProvider"
-            class="demo-img img-fluid border"
+            class="demo-img img-fluid preview-img"
             width="944"
             height="586"
           />
@@ -83,3 +83,27 @@ async function changeImage(img: string) {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.demo-img {
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+}
+
+.demo-img:hover {
+  -webkit-transform: scale(1.6);
+  /* Safari and Chrome */
+  -moz-transform: scale(1.6);
+  /* Firefox */
+  -ms-transform: scale(1.6);
+  /* IE 9 */
+  -o-transform: scale(1.6);
+  /* Opera */
+  transform: scale(1.6);
+  cursor: zoom-in;
+}
+</style>
