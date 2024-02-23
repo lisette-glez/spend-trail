@@ -38,7 +38,7 @@ function getImagePreview(file: File) {
       data-bs-target="#myModal"
     >
       <div class="nav-link">
-        <i class="bi-file-arrow-down"></i> Extract data
+        <i class="bi-file-arrow-down text-sm"></i> Extract data
         <span
           class="spinner-border regular-color spinner-border-sm ms-1"
           role="status"
@@ -48,7 +48,9 @@ function getImagePreview(file: File) {
       </div>
     </li>
     <li class="nav-item cs-pointer" @click="emit('clearData')">
-      <div class="nav-link"><i class="bi-x-circle text-danger"></i> Cancel</div>
+      <div class="nav-link">
+        <i class="bi-x-circle text-danger text-sm"></i> Cancel
+      </div>
     </li>
   </ul>
   <img :src="preview" class="img-fluid w-100 preview-img" />

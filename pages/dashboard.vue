@@ -46,7 +46,7 @@ function getDocName(id: string) {
 <template>
   <div class="row">
     <div class="col">
-      <div class="card main-card px-5 pt-3 pb-5 shadow-sm">
+      <div class="card main-card px-4 pt-3 pb-5 shadow-sm">
         <ul class="nav nav-tabs mb-4">
           <li class="nav-item cs-pointer" @click="changeTab('EXPENSE RECEIPT')">
             <NuxtLink
@@ -70,52 +70,48 @@ function getDocName(id: string) {
             </div>
           </div>
           <div
-            class="col-md-4"
+            class="col-md-6 col-lg-4"
             v-for="item in fetchedData"
             :key="item.id"
             v-else
           >
             <div class="card mb-4 regular-border">
-              <div class="ps-4 pe-3 pt-1 pb-3">
-                <div class="row">
-                  <div class="col text-end">
-                    <i
-                      class="bi bi-camera fs-5 cs-pointer"
-                      data-bs-toggle="modal"
-                      data-bs-target="#imgModal"
-                      @click="getDocName(item.id)"
-                    ></i>
-                  </div>
+              <div class="row pe-2 pt-1">
+                <div class="col text-end">
+                  <i
+                    class="bi bi-camera fs-5 cs-pointer"
+                    data-bs-toggle="modal"
+                    data-bs-target="#imgModal"
+                    @click="getDocName(item.id)"
+                  ></i>
                 </div>
-                <div class="row">
-                  <div class="col-md-2">
-                    <i
-                      class="bi bi-receipt regular-color"
-                      style="font-size: 2.7rem"
-                      v-if="activeTab == 'EXPENSE RECEIPT'"
-                    ></i>
-                    <i
-                      v-else
-                      class="bi bi-file-earmark-text regular-color"
-                      style="font-size: 2.7rem"
-                    ></i>
-                  </div>
-                  <div class="col-md-10 align-self-center">
-                    <h5 class="mb-0">
-                      {{ item.supplier_name ? item.supplier_name : "Unknown" }}
-                    </h5>
-                    <span class="text-body-tertiary">
-                      {{ item.purchase_date ? item.purchase_date : "Unknown" }}
-                    </span>
-                  </div>
+              </div>
+              <div class="row ps-3 pb-2">
+                <div class="col-md-2">
+                  <i
+                    class="bi bi-receipt regular-color text-xl"
+                    v-if="activeTab == 'EXPENSE RECEIPT'"
+                  ></i>
+                  <i
+                    v-else
+                    class="bi bi-file-earmark-text regular-color text-xl"
+                  ></i>
+                </div>
+                <div class="col-md-10 align-self-center">
+                  <h5 class="mb-0">
+                    {{ item.supplier_name ? item.supplier_name : "Unknown" }}
+                  </h5>
+                  <span class="text-body-tertiary">
+                    {{ item.purchase_date ? item.purchase_date : "Unknown" }}
+                  </span>
                 </div>
               </div>
               <div class="card-footer bg-light-subtle">
                 <div class="row">
-                  <div class="col text-start text-uppercase">
+                  <div class="col-md-6 text-start text-uppercase">
                     {{ item.category ? item.category : item.invoice_number }}
                   </div>
-                  <div class="col text-end">
+                  <div class="col-md-6 text-start text-md-end">
                     <i class="bi bi-cash align-middle"> </i> ${{
                       item.total_amount
                     }}

@@ -175,7 +175,7 @@ const handleGoogleLogin = async () => {
 
 <style lang="scss">
 .card-login .bi-person-circle {
-  font-size: var(--text-xl);
+  font-size: var(--text-5xl);
   color: var(--green-light);
 }
 
