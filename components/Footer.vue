@@ -1,6 +1,6 @@
 <template>
-  <footer class="fs-6 mt-5 text-light">
-    <div class="container fixed-bottom">
+  <footer class="footer fs-6 text-light">
+    <div class="container">
       <div class="row my-2 justify-content-center">
         <div class="col-md-6 text-center pt-2">
           <span
@@ -11,3 +11,11 @@
     </div>
   </footer>
 </template>
+
+<style lang="scss">
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+</style>

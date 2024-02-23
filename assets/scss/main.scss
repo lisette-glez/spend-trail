@@ -1,8 +1,14 @@
 @import "bootstrap/scss/bootstrap";
 
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 body {
   font-family: monospace;
   background-image: linear-gradient(to right, #74ebd5 0%, #9face6 100%);
+  margin-bottom: 4rem;
 }
 
 .dark-mode body {
