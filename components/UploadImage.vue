@@ -39,7 +39,11 @@ function triggerUpload() {
   >
     <div class="file-input" v-if="!isUpload" @click="triggerUpload">
       <div for="file">
-        <img src="/upload-img.png" class="img-fluid upload-image" />
+        <img
+          src="/upload-img.png"
+          class="img-fluid upload-image"
+          alt="Upload image icon"
+        />
         <input type="file" ref="uploadInput" @change="onChange($event)" />
       </div>
     </div>

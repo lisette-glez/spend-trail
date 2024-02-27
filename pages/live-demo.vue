@@ -51,6 +51,7 @@ async function changeImage(img: string) {
             class="demo-img img-fluid preview-img"
             width="944"
             height="586"
+            alt="Demo image preview"
           />
         </div>
         <div class="row mb-5">
@@ -60,6 +61,7 @@ async function changeImage(img: string) {
               provider="myProvider"
               class="img-thumbnail cs-pointer"
               @click="changeImage('Receipt')"
+              alt="Receipt thumbnail image"
             />
           </div>
           <div class="mt-3 col-4">
@@ -68,6 +70,7 @@ async function changeImage(img: string) {
               provider="myProvider"
               class="img-thumbnail cs-pointe"
               @click="changeImage('Invoice')"
+              alt="Invoice thumbnail image"
             />
           </div>
         </div>

@@ -53,7 +53,11 @@ function getImagePreview(file: File) {
       </div>
     </li>
   </ul>
-  <img :src="preview" class="img-fluid w-100 preview-img" />
+  <img
+    :src="preview"
+    class="img-fluid w-100 preview-img"
+    alt="Uploaded image preview"
+  />
 </template>
 
 <style lang="scss">

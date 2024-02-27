@@ -22,7 +22,10 @@ const logout = async () => {
     <div class="container-fluid">
       <div class="toggler-wrapper">
         <NuxtLink to="/" class="navbar-brand">
-          <img src="/spendtrail.png" class="w-60 w-lg pt-2 ps-2 ps-lg-4"
+          <img
+            src="/spendtrail.png"
+            alt="SpendTrail app logo"
+            class="w-60 w-lg pt-2 ps-2 ps-lg-4"
         /></NuxtLink>
         <button
           class="navbar-toggler p-1"
@@ -52,6 +55,7 @@ const logout = async () => {
               <img
                 v-if="profile"
                 class="img-thumbnail rounded-circle"
+                alt="User profile icon"
                 style="width: 2rem; height: 2rem"
                 :src="profile"
               />

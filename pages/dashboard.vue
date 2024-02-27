@@ -139,6 +139,7 @@ function getDocName(id: string) {
                     class="img-fluid preview-img"
                     width="944"
                     height="586"
+                    alt="Document image loaded from database"
                   />
                 </div>
               </div>
