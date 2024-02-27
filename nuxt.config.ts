@@ -27,7 +27,6 @@ export default defineNuxtConfig({
     public: {
       receiptImgUrl: process.env.DEMO_RECEIPT_IMAGE_URL,
       invoiceImgUrl: process.env.DEMO_INVOICE_IMAGE_URL,
-      imgBaseUrl: process.env.IMGBASE_URL,
     },
   },
 });
