@@ -68,7 +68,7 @@ async function changeImage(img: string) {
             <NuxtImg
               src="e38dad66-8f1a-4821-8598-cf1239c118d4"
               provider="myProvider"
-              class="img-thumbnail cs-pointe"
+              class="img-thumbnail cs-pointer"
               @click="changeImage('Invoice')"
               alt="Invoice thumbnail image"
             />
@@ -77,6 +77,7 @@ async function changeImage(img: string) {
       </div>
       <div class="col-lg-8 extracted-data ps-lg-5">
         <DisplayData
+          v-if="imgFile"
           :file="imgFile"
           :url="apiUrl"
           :docType="activeImg"
