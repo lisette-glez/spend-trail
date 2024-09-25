@@ -55,7 +55,7 @@ const handleGithubLogin = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: "http://lisette.dev/confirm",
+      redirectTo: "https://spendtrail.vercel.app/confirm",
     },
   });
 
@@ -72,7 +72,7 @@ const handleGoogleLogin = async () => {
         access_type: "offline",
         prompt: "consent",
       },
-      redirectTo: "http://lisette.dev/confirm",
+      redirectTo: "https://spendtrail.vercel.app/confirm",
     },
   });
 
